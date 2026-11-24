@@ -12,6 +12,9 @@ export class InputController {
     this.reload = false;
     this.weaponSlot = -1;
     this.cameraToggle = false;
+    this.gloo = false;
+    this.grenade = false;
+    this.airdrop = false;
 
     this.joystick = {
       x: 0,
@@ -32,6 +35,9 @@ export class InputController {
 
         if (e.code === "KeyQ") this.aim = !this.aim;
         if (e.code === "KeyV") this.cameraToggle = true;
+        if (e.code === "KeyG") this.gloo = true;
+        if (e.code === "KeyH") this.grenade = true;
+        if (e.code === "KeyB") this.airdrop = true;
 
         if (e.code === "Space") {
           this.jump = true;
@@ -394,6 +400,9 @@ export class InputController {
   }
 
   consumeCameraToggle(){ const v=this.cameraToggle; this.cameraToggle=false; return v; }
+  consumeGloo(){const v=this.gloo;this.gloo=false;return v;}
+  consumeGrenade(){const v=this.grenade;this.grenade=false;return v;}
+  consumeAirdrop(){const v=this.airdrop;this.airdrop=false;return v;}
 
   isAim() {
     return this.aim;
