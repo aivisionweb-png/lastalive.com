@@ -9,6 +9,8 @@ export class InputController {
     this.jump = false;
     this.crouch = false;
     this.aim = false;
+    this.reload = false;
+    this.weaponSlot = -1;
 
     this.joystick = {
       x: 0,
@@ -249,6 +251,21 @@ export class InputController {
     hold("sprintBtn", "sprint");
     hold("aimBtn", "aim");
 
+    const reload = document.getElementById("reloadBtn");
+    if (reload) {
+      reload.addEventListener("pointerdown", e => {
+        e.preventDefault();
+        this.reload = true;
+      });
+    }
+
+    document.querySelectorAll(".weapon-slot").forEach(slot => {
+      slot.addEventListener("pointerdown", e => {
+        e.preventDefault();
+        this.weaponSlot = Number(slot.dataset.slot);
+      });
+    });
+
     const jump =
       document.getElementById("jumpBtn");
 
@@ -363,5 +380,17 @@ export class InputController {
 
   isAim() {
     return this.aim;
+  }
+
+  consumeReload() {
+    const value = this.reload;
+    this.reload = false;
+    return value;
+  }
+
+  consumeWeaponSlot() {
+    const value = this.weaponSlot;
+    this.weaponSlot = -1;
+    return value;
   }
 }
