@@ -386,6 +386,53 @@ export class BotManager {
     }
   }
 
+  enemyTracer(bot) {
+    const T=this.T;
+    const start=bot.object.position.clone();
+    start.y=1.25;
+
+    const end=this.player.object.position.clone();
+    end.y=1.45;
+
+    const dir=end.clone().sub(start);
+    const len=dir.length();
+    if(len<0.01)return;
+
+    const flash=new T.Mesh(
+      new T.SphereGeometry(.11,7,7),
+      new T.MeshBasicMaterial({
+        color:0xff3d57,
+        transparent:true,
+        opacity:.95,
+        depthWrite:false
+      })
+    );
+    flash.position.copy(start);
+    this.map.root.add(flash);
+
+    const tracer=new T.Mesh(
+      new T.CylinderGeometry(.012,.012,len,4),
+      new T.MeshBasicMaterial({
+        color:0xff5168,
+        transparent:true,
+        opacity:.7,
+        depthWrite:false,
+        blending:T.AdditiveBlending
+      })
+    );
+    tracer.position.copy(start).add(end).multiplyScalar(.5);
+    tracer.quaternion.setFromUnitVectors(
+      new T.Vector3(0,1,0),
+      dir.normalize()
+    );
+    this.map.root.add(tracer);
+
+    setTimeout(()=>{
+      flash.removeFromParent();
+      tracer.removeFromParent();
+    },70);
+  }
+
   alive() {
     return this.bots.filter(
       b => b.alive
@@ -481,6 +528,9 @@ export class BotManager {
             0.65 +
             Math.random() *
               1.1;
+
+          /* ENEMY WEAPON FIRE */
+          this.enemyTracer(bot);
 
           if (
             Math.random() <
