@@ -4,12 +4,22 @@ export class UI{constructor(){this.scene=null;this.name="PLAYER"}bind(){this.el=
   this.el.menu.classList.add("hidden");
   this.el.hud.classList.remove("hidden");
   if(this.el.mobile){
-    this.el.mobile.classList.remove("hidden");
-    this.el.mobile.style.setProperty("display","block","important");
-    this.el.mobile.style.setProperty("visibility","visible","important");
-    this.el.mobile.style.setProperty("opacity","1","important");
-    this.el.mobile.style.setProperty("pointer-events","none","important");
-    document.body.classList.add("la-touch-device");
+    const touchDevice=matchMedia("(pointer:coarse)").matches||navigator.maxTouchPoints>0||matchMedia("(max-width:700px)").matches;
+    if(touchDevice){
+      this.el.mobile.classList.remove("hidden");
+      this.el.mobile.style.setProperty("display","block","important");
+      this.el.mobile.style.setProperty("visibility","visible","important");
+      this.el.mobile.style.setProperty("opacity","1","important");
+      this.el.mobile.style.setProperty("pointer-events","none","important");
+      document.body.classList.add("la-touch-device");
+    }else{
+      this.el.mobile.classList.add("hidden");
+      this.el.mobile.style.removeProperty("display");
+      this.el.mobile.style.removeProperty("visibility");
+      this.el.mobile.style.removeProperty("opacity");
+      this.el.mobile.style.removeProperty("pointer-events");
+      document.body.classList.remove("la-touch-device");
+    }
   }
 }
  hp(v){this.el.hp.textContent=Math.ceil(v);this.el.hpBar.style.width=Math.max(0,v)+"%"}armor(v){this.el.armor.textContent=Math.ceil(v);this.el.armorBar.style.width=Math.max(0,v)+"%"}weapon(w,reloading=false){this.el.weapon.textContent=w.name;this.el.weaponType=w.type;this.el.weaponName=w.name;this.el.weaponSlots=this.el.weaponBar?.querySelectorAll(".weapon-slot");this.el.weaponSlots?.forEach((s,i)=>s.classList.toggle("active",i===this.weaponIndex));this.el.ammo.textContent=`${w.ammo} / ${w.reserve}`;this.el.reload.textContent=reloading?"RELOADING…":""}scope(active,w){if(!this.el.scope)return;this.el.scope.classList.toggle("hidden",!active);document.body.classList.toggle("ads-active",active);if(active&&this.el.scopeLabel)this.el.scopeLabel.textContent=(w?.scope||"OPTIC")+" // "+(w?.id==="sniper"?"6X":w?.id==="dmr"?"4X":"1X")}
