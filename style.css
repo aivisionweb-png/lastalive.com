@@ -94,3 +94,60 @@ body.ads-active .weapon-bar{opacity:.25}
 @media(max-width:700px) and (orientation:portrait){
   #mobileControls:after{content:"ROTATE PHONE";position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(3,6,5,.96);color:#5fe0ad;font:900 18px monospace;letter-spacing:4px;z-index:30}
 }
+
+/* MOBILE CONTROLS — FORCE VISIBLE + TOUCH SAFE */
+@media (max-width:700px){
+  #mobileControls{
+    display:block!important;
+    position:fixed!important;
+    inset:0!important;
+    z-index:100!important;
+    pointer-events:none!important;
+  }
+  #mobileControls .touch-btn,
+  #mobileControls #joystick{
+    pointer-events:auto!important;
+    position:absolute!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  #touchLook{
+    position:fixed!important;
+    left:38%!important;
+    right:0!important;
+    top:0!important;
+    bottom:0!important;
+    z-index:1!important;
+    pointer-events:auto!important;
+    background:transparent!important;
+  }
+  #mobileControls .touch-btn{
+    z-index:20!important;
+    background:rgba(7,15,12,.78)!important;
+    color:#eaf5ef!important;
+    border:1px solid rgba(95,224,173,.48)!important;
+    border-radius:50%!important;
+    font-weight:900!important;
+    font-size:8px!important;
+    backdrop-filter:blur(8px)!important;
+  }
+  #mobileControls .fire{
+    background:rgba(180,35,50,.78)!important;
+    border-color:rgba(255,100,110,.75)!important;
+  }
+  #mobileControls #joystick{
+    z-index:20!important;
+    border:1px solid rgba(95,224,173,.42)!important;
+    border-radius:50%!important;
+    background:rgba(4,12,9,.48)!important;
+  }
+  #joystickStick{
+    width:54px!important;height:54px!important;
+    border-radius:50%!important;
+    background:rgba(95,224,173,.42)!important;
+    border:1px solid rgba(150,255,215,.8)!important;
+  }
+  .mobile-tip{z-index:101!important}
+  .weapon-bar{z-index:22!important}
+}
