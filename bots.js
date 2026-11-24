@@ -206,10 +206,11 @@ export class BotManager {
         Math.PI *
         2;
 
-      const radius =
-        180 +
-        Math.random() *
-          540;
+      const near = index < 12;
+
+      const radius = near
+        ? 180 + Math.random() * 320
+        : 420 + Math.random() * 650;
 
       position =
         new this.T.Vector3(
@@ -223,16 +224,16 @@ export class BotManager {
       attempts++;
 
       if (
-        attempts > 120
+        attempts > 180
       ) {
         position.set(
           (Math.random() -
             0.5) *
-            700,
+            1900,
           0,
           (Math.random() -
             0.5) *
-            700
+            1900
         );
 
         break;
