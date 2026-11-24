@@ -161,6 +161,9 @@ export class BattleRoyaleSystem {
   update(dt, bots){
     this.player.__bots=bots?.bots||[];
     if(!this.started)return;
+    if(this.input.consumeGloo?.()) this.deployGloo();
+    if(this.input.consumeGrenade?.()) this.throwGrenade();
+    if(this.input.consumeAirdrop?.()) this.callAirdrop();
     const counts=document.getElementById("brCounts");
     if(counts) counts.textContent=`MED \${this.medkits}  ·  GLOO \${this.gloo}  ·  FRAG \${this.grenades}  ·  V \${this.inVehicle?"DRIVE":"ENTER"}`;
     if(this.dropActive){
