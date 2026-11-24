@@ -1,19 +1,19 @@
-import { CONFIG, WEAPONS } from "./config.js?v=20261124-4";
-import { InputController } from "./input.js?v=20261124-4";
-import { WorldMap } from "./map.js?v=20261124-4";
-import { PlayerController } from "./player.js?v=20261124-4";
-import { WeaponSystem } from "./weapons.js?v=20261124-4";
-import { BotManager } from "./bots.js?v=20261124-4";
-import { LootSystem } from "./loot.js?v=20261124-4";
-import { SafeZone } from "./zone.js?v=20261124-4";
-import { AudioSystem } from "./audio.js?v=20261124-4";
-import { UI } from "./ui.js?v=20261124-4";
-import { Minimap } from "./minimap.js?v=20261124-4";
-import { NetworkClient } from "./network.js?v=20261124-4";
-import { MatchState } from "./match.js?v=20261124-4";
-import { DebugTools } from "./debug.js?v=20261124-4";
-import { BattleRoyaleSystem } from "./battleRoyale.js?v=20261124-4";
-import { MultiplayerAvatars } from "./multiplayer.js?v=20261124-4";
+import { CONFIG, WEAPONS } from "./config.js?v=20261124-5";
+import { InputController } from "./input.js?v=20261124-5";
+import { WorldMap } from "./map.js?v=20261124-5";
+import { PlayerController } from "./player.js?v=20261124-5";
+import { WeaponSystem } from "./weapons.js?v=20261124-5";
+import { BotManager } from "./bots.js?v=20261124-5";
+import { LootSystem } from "./loot.js?v=20261124-5";
+import { SafeZone } from "./zone.js?v=20261124-5";
+import { AudioSystem } from "./audio.js?v=20261124-5";
+import { UI } from "./ui.js?v=20261124-5";
+import { Minimap } from "./minimap.js?v=20261124-5";
+import { NetworkClient } from "./network.js?v=20261124-5";
+import { MatchState } from "./match.js?v=20261124-5";
+import { DebugTools } from "./debug.js?v=20261124-5";
+import { BattleRoyaleSystem } from "./battleRoyale.js?v=20261124-5";
+import { MultiplayerAvatars } from "./multiplayer.js?v=20261124-5";
 
 const T = window.THREE;
 
@@ -539,7 +539,6 @@ function startMatch() {
 
     match.begin();
 
-    player.applyLoadout?.(window.__LA_CHARACTER||0, window.__LA_OUTFIT||0);
     ui.start(name);
 
     running = true;
@@ -676,36 +675,6 @@ function bindUI() {
     }
   );
 
-  // Operator customization in the starting lobby.
-  window.__LA_CHARACTER=0;
-  window.__LA_OUTFIT=0;
-  const loadoutName=$("loadoutName");
-  const statusEl=$("loadoutStatus");
-  const updateLoadout=()=>{
-    if(player && typeof player.applyLoadout==="function"){ player.applyLoadout(window.__LA_CHARACTER,window.__LA_OUTFIT); }
-    const names=["NOVA","RAVEN","KAI","VEX"];
-    const clothes=["TACTICAL","URBAN","DESERT","NIGHT"];
-    if(loadoutName) loadoutName.textContent=names[window.__LA_CHARACTER]+" // "+clothes[window.__LA_OUTFIT];
-    if(statusEl) statusEl.textContent="READY TO DEPLOY";
-  };
-  document.querySelectorAll("[data-character]").forEach(btn=>{
-    btn.addEventListener("click",e=>{
-      e.preventDefault();
-      window.__LA_CHARACTER=Number(btn.dataset.character)||0;
-      document.querySelectorAll("[data-character]").forEach(x=>x.classList.toggle("active",x===btn));
-      if(!initialized) initGame();
-      updateLoadout();
-    });
-  });
-  document.querySelectorAll("[data-outfit]").forEach(btn=>{
-    btn.addEventListener("click",e=>{
-      e.preventDefault();
-      window.__LA_OUTFIT=Number(btn.dataset.outfit)||0;
-      document.querySelectorAll("[data-outfit]").forEach(x=>x.classList.toggle("active",x===btn));
-      if(!initialized) initGame();
-      updateLoadout();
-    });
-  });
   const name =
     $("playerName");
 
