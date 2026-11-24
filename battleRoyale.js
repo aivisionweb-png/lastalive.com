@@ -470,6 +470,7 @@ export class BattleRoyaleSystem {
   }
 
   update(dt, bots) {
+    const T = this.T;
     this.player.__bots = bots?.bots || [];
 
     if (!this.started) return;
