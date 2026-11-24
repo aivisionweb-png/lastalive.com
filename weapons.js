@@ -1,7 +1,11 @@
 export class WeaponSystem {
-
-  constructor(T, weapons, player, ui, audio) {
-
+  constructor(
+    T,
+    weapons,
+    player,
+    ui,
+    audio
+  ) {
     this.T = T;
     this.defs = weapons;
     this.player = player;
@@ -10,25 +14,31 @@ export class WeaponSystem {
 
     this.index = 0;
 
-    this.states = weapons.map(w => ({
-      ...w,
-      ammo: w.mag
-    }));
+    this.states =
+      weapons.map(w => ({
+        ...w,
+        ammo: w.mag,
+        reserve: w.reserve
+      }));
 
     this.last = 0;
     this.reloadUntil = 0;
 
-    this.ray = new T.Raycaster();
-  }
+    this.ray =
+      new T.Raycaster();
 
+    this.player.setWeapon(
+      this.current
+    );
+  }
 
   get current() {
-    return this.states[this.index];
+    return this.states[
+      this.index
+    ];
   }
 
-
   switch(index) {
-
     if (
       index < 0 ||
       index >= this.states.length
@@ -37,11 +47,16 @@ export class WeaponSystem {
     }
 
     this.index = index;
-
     this.reloadUntil = 0;
 
+    this.player.setWeapon(
+      this.current
+    );
+
     this.ui.toast(
-      this.current.name
+      this.current.name +
+      " · " +
+      this.current.scope
     );
 
     this.ui.weapon(
@@ -50,84 +65,63 @@ export class WeaponSystem {
     );
   }
 
-
   addAmmo(amount = 30) {
-
-    const value =
-      Math.max(
-        0,
-        Number(amount) || 0
-      );
-
-    const weapon =
+    const w =
       this.current;
 
-    weapon.reserve =
+    w.reserve =
       Math.max(
         0,
-        weapon.reserve + value
+        w.reserve +
+          (Number(amount) || 0)
       );
 
     this.ui.weapon(
-      weapon,
+      w,
       this.reloadUntil > 0
     );
   }
 
-
   reload() {
-
-    const weapon =
+    const w =
       this.current;
 
-    if (this.reloadUntil) {
-      return;
-    }
-
     if (
-      weapon.ammo >=
-      weapon.mag
-    ) {
-      return;
-    }
-
-    if (
-      weapon.reserve <= 0
+      this.reloadUntil ||
+      w.ammo >= w.mag ||
+      w.reserve <= 0
     ) {
       return;
     }
 
     this.reloadUntil =
       performance.now() +
-      weapon.reload * 1000;
+      w.reload * 1000;
 
     this.ui.setReload(true);
   }
 
-
   update() {
-
     if (
       this.reloadUntil &&
       performance.now() >=
         this.reloadUntil
     ) {
-
-      const weapon =
+      const w =
         this.current;
 
       const needed =
-        weapon.mag -
-        weapon.ammo;
+        w.mag -
+        w.ammo;
 
       const take =
         Math.min(
           needed,
-          weapon.reserve
+          w.reserve
         );
 
-      weapon.ammo += take;
-      weapon.reserve -= take;
+      w.ammo += take;
+      w.reserve -= take;
 
       this.reloadUntil = 0;
 
@@ -140,20 +134,16 @@ export class WeaponSystem {
     );
   }
 
-
   shoot(
     scene,
     camera,
     bots
   ) {
-
-    if (
-      this.reloadUntil
-    ) {
+    if (this.reloadUntil) {
       return;
     }
 
-    const weapon =
+    const w =
       this.current;
 
     const now =
@@ -161,46 +151,53 @@ export class WeaponSystem {
 
     if (
       now - this.last <
-      weapon.rate
+      w.rate
     ) {
       return;
     }
 
-    if (
-      weapon.ammo <= 0
-    ) {
-
+    if (w.ammo <= 0) {
       this.reload();
-
       return;
     }
 
     this.last = now;
+    w.ammo--;
 
-    weapon.ammo--;
+    this.audio?.gun?.();
 
-    this.audio.gun();
-
-    this.flash();
+    this.player.addRecoil(
+      w.recoil || 0.01
+    );
 
     const pellets =
-      weapon.pellets || 1;
+      w.pellets || 1;
 
+    const alive =
+      bots.filter(
+        b =>
+          b &&
+          b.alive &&
+          b.object
+      );
+
+    const objects =
+      alive.map(
+        b => b.object
+      );
 
     for (
       let i = 0;
       i < pellets;
       i++
     ) {
-
       const sx =
         (Math.random() - 0.5) *
-        weapon.spread;
+        w.spread;
 
       const sy =
         (Math.random() - 0.5) *
-        weapon.spread;
-
+        w.spread;
 
       this.ray.setFromCamera(
         new this.T.Vector2(
@@ -210,29 +207,11 @@ export class WeaponSystem {
         camera
       );
 
-
-      const aliveBots =
-        bots.filter(
-          bot =>
-            bot &&
-            bot.alive &&
-            bot.object
-        );
-
-
-      const objects =
-        aliveBots.map(
-          bot =>
-            bot.object
-        );
-
-
       const hits =
         this.ray.intersectObjects(
           objects,
           true
         );
-
 
       let end =
         this.ray.ray.origin
@@ -241,46 +220,44 @@ export class WeaponSystem {
             this.ray.ray.direction
               .clone()
               .multiplyScalar(
-                weapon.range
+                w.range
               )
           );
 
-
-      if (
-        hits.length > 0
-      ) {
-
+      if (hits.length) {
         end.copy(
           hits[0].point
         );
 
-
         let object =
           hits[0].object;
-
 
         while (
           object &&
           !object.userData?.bot
         ) {
-
           object =
             object.parent;
         }
 
-
         if (
           object?.userData?.bot
         ) {
+          const head =
+            hits[0]
+              .object
+              .userData
+              .head === true;
 
           object.userData.bot.hit(
-            weapon.damage
+            head
+              ? w.damage * 2
+              : w.damage
           );
 
           this.ui.hit();
         }
       }
-
 
       this.tracer(
         scene,
@@ -289,13 +266,11 @@ export class WeaponSystem {
     }
   }
 
-
   flash() {
-
     const flash =
       new this.T.Mesh(
         new this.T.SphereGeometry(
-          0.12,
+          0.13,
           6,
           6
         ),
@@ -304,11 +279,9 @@ export class WeaponSystem {
         })
       );
 
-
     this.player.gun.add(
       flash
     );
-
 
     setTimeout(
       () => {
@@ -318,27 +291,24 @@ export class WeaponSystem {
     );
   }
 
-
   tracer(
     scene,
     end
   ) {
+    this.flash();
 
     const start =
       this.player.gun.getWorldPosition(
         new this.T.Vector3()
       );
 
-
     const direction =
       end
         .clone()
         .sub(start);
 
-
     const length =
       direction.length();
-
 
     if (
       length <= 0.001
@@ -346,28 +316,27 @@ export class WeaponSystem {
       return;
     }
 
-
     const mesh =
       new this.T.Mesh(
         new this.T.CylinderGeometry(
-          0.01,
-          0.01,
+          0.008,
+          0.008,
           length,
           4
         ),
         new this.T.MeshBasicMaterial({
           color: 0xffd98b,
           transparent: true,
-          opacity: 0.6
+          opacity: 0.55
         })
       );
-
 
     mesh.position
       .copy(start)
       .add(end)
-      .multiplyScalar(0.5);
-
+      .multiplyScalar(
+        0.5
+      );
 
     mesh.quaternion.setFromUnitVectors(
       new this.T.Vector3(
@@ -378,9 +347,7 @@ export class WeaponSystem {
       direction.normalize()
     );
 
-
     scene.add(mesh);
-
 
     setTimeout(
       () => {
