@@ -40,6 +40,7 @@ let multiplayerAvatars;
 let initialized = false;
 let running = false;
 let starting = false;
+let lastPlayerHP = 100;
 
 const ui = new UI();
 try {
@@ -508,6 +509,7 @@ function startMatch() {
     */
 
     player.hp = 100;
+    lastPlayerHP = 100;
     player.armor = 75;
     player.kills = 0;
     player.alive = true;
