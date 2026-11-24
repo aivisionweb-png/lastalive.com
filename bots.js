@@ -278,57 +278,46 @@ export class BotManager {
   }
 
 
-  hit(
-    bot,
-    damage
-  ) {
-    if (!bot.alive) {
-      return;
-    }
-
-    const absorbed =
-      Math.min(
-        bot.armor,
-        damage * 0.55
-      );
-
-    bot.armor -=
-      absorbed;
-
-    bot.hp -=
-      damage -
-      absorbed;
-
-    if (bot.hp <= 0) {
-      bot.hp = 0;
-      bot.alive = false;
-
-      bot.object.visible = false;
-
-      this.player.kills++;
-      this.ui.killStreak?.(this.player.kills);
-
-      this.ui.killFeed(
-        "YOU",
-        bot.object
-          .userData
-          .botName ||
-          "ENEMY"
-      );
-
-      this.ui.toast(
-        "ENEMY ELIMINATED"
-      );
-
-      if (
-        this.alive() === 0
-      ) {
-        this.onAllDead?.();
+  hit(bot, damage, attacker=null) {
+    if (!bot.alive) return;
+    const absorbed=Math.min(bot.armor,damage*.55);
+    bot.armor-=absorbed;
+    bot.hp-=damage-absorbed;
+    if(bot.hp<=0){
+      bot.hp=0; bot.alive=false; bot.object.visible=false;
+      if(attacker?.object?.userData?.bot){
+        attacker.kills=(attacker.kills||0)+1;
+        this.ui.killFeed(attacker.object.userData.botName||"ENEMY",bot.object.userData.botName||"ENEMY");
+      }else{
+        this.player.kills++;
+        this.ui.killStreak?.(this.player.kills);
+        this.ui.killFeed("YOU",bot.object.userData.botName||"ENEMY");
+        this.ui.toast("ENEMY ELIMINATED");
       }
+      if(this.alive()===0) this.onAllDead?.();
     }
   }
 
-  enemyTracer(bot) {
+  findTarget(bot){
+    const candidates=[];
+    if(this.player.alive){
+      const d=Math.hypot(this.player.object.position.x-bot.object.position.x,this.player.object.position.z-bot.object.position.z);
+      if(d<260) candidates.push({type:"player",target:this.player,d});
+    }
+    for(const other of this.bots){
+      if(other===bot||!other.alive||!other.object.visible) continue;
+      const d=Math.hypot(other.object.position.x-bot.object.position.x,other.object.position.z-bot.object.position.z);
+      if(d<this.c.bots.detect) candidates.push({type:"bot",target:other,d});
+    }
+    if(!candidates.length) return null;
+    candidates.sort((a,b)=>a.d-b.d);
+    // Prevent every survivor from tunneling the human: nearby bots fight each other first.
+    const botChoices=candidates.filter(c=>c.type==="bot");
+    if(botChoices.length && (!candidates.some(c=>c.type==="player") || botChoices[0].d<candidates.find(c=>c.type==="player")?.d*.9+18)) return botChoices[0];
+    return candidates[0];
+  }
+
+    enemyTracer(bot,target=this.player) {
     const T=this.T;
     const start=bot.object.position.clone();
     start.y=1.25;
@@ -382,148 +371,56 @@ export class BotManager {
   }
 
   update(dt) {
-    if (this.player.__combatLocked) return;
-
-    for (
-      const bot of this.bots
-    ) {
-      if (!bot.alive) {
-        continue;
+    if(this.player.__combatLocked) return;
+    for(const bot of this.bots){
+      if(!bot.alive) continue;
+      const glow=bot.object.userData.enemyGlow;
+      if(glow){
+        const pulse=.72+Math.sin(performance.now()*.006+bot.roam)*.18;
+        glow.ring.material.opacity=pulse;
+        glow.beacon.material.opacity=pulse*.72;
+        glow.beaconTop.material.opacity=pulse;
+        glow.ring.scale.setScalar(1+Math.sin(performance.now()*.004+bot.roam)*.08);
       }
-
-      const dx =
-        this.player.object
-          .position.x -
-        bot.object.position.x;
-
-      const dz =
-        this.player.object
-          .position.z -
-        bot.object.position.z;
-
-      const distance =
-        Math.hypot(
-          dx,
-          dz
-        );
-
-      const glow = bot.object.userData.enemyGlow;
-      if (glow) {
-        const pulse = 0.72 + Math.sin(performance.now() * 0.006 + bot.roam) * 0.18;
-        glow.ring.material.opacity = pulse;
-        glow.beacon.material.opacity = pulse * 0.72;
-        glow.beaconTop.material.opacity = pulse;
-        glow.ring.scale.setScalar(1 + Math.sin(performance.now() * 0.004 + bot.roam) * 0.08);
+      bot.roam+=dt*(.3+Math.random()*.1);
+      bot.targetTimer=(bot.targetTimer||0)-dt;
+      if(!bot.target||!bot.target.alive||bot.targetTimer<=0){
+        const picked=this.findTarget(bot);
+        bot.target=picked?.target||null;
+        bot.targetType=picked?.type||null;
+        bot.targetTimer=.45+Math.random()*.55;
       }
-
-      bot.roam +=
-        dt *
-        (0.3 +
-          Math.random() *
-            0.1);
-
-      if (
-        distance <
-        this.c.bots.detect
-      ) {
-        const angle =
-          Math.atan2(
-            dx,
-            dz
-          );
-
-        bot.object.rotation.y =
-          angle;
-
-        if (
-          distance >
-          this.c.bots.minRange
-        ) {
-          const speed =
-            this.c.bots.speed *
-            (distance > 100
-              ? 1.15
-              : 1);
-
-          bot.object.position.x +=
-            Math.sin(angle) *
-            speed *
-            dt;
-
-          bot.object.position.z +=
-            Math.cos(angle) *
-            speed *
-            dt;
-
-          this.map.resolve(
-            bot.object.position,
-            0.4
-          );
-        }
-
-        bot.cool -= dt;
-
-        if (
-          distance <
-            this.c.bots.shootRange &&
-          bot.cool <= 0
-        ) {
-          bot.cool =
-            0.65 +
-            Math.random() *
-              1.1;
-
-          /* ENEMY WEAPON FIRE */
-          this.enemyTracer(bot);
-
-          if (
-            Math.random() <
-            this.c.bots.accuracy
-          ) {
-            const damage =
-              6 +
-              Math.random() *
-                8;
-
-            this.player.damage(
-              damage
-            );
-
-            this.ui.damage();
+      const target=bot.target;
+      if(target?.alive){
+        const tx=target.object.position.x, tz=target.object.position.z;
+        const dx=tx-bot.object.position.x, dz=tz-bot.object.position.z;
+        const distance=Math.hypot(dx,dz);
+        if(distance<this.c.bots.detect){
+          const angle=Math.atan2(dx,dz);
+          bot.object.rotation.y=angle;
+          if(distance>this.c.bots.minRange){
+            const speed=this.c.bots.speed*(distance>100?1.15:1);
+            bot.object.position.x+=Math.sin(angle)*speed*dt;
+            bot.object.position.z+=Math.cos(angle)*speed*dt;
+            this.map.resolve(bot.object.position,.4);
           }
+          bot.cool-=dt;
+          if(distance<this.c.bots.shootRange && bot.cool<=0){
+            bot.cool=.65+Math.random()*1.1;
+            this.enemyTracer(bot,target);
+            if(Math.random()<this.c.bots.accuracy){
+              const damage=6+Math.random()*8;
+              if(bot.targetType==="bot") target.hit(damage,bot);
+              else { this.player.damage(damage); this.ui.damage(); }
+            }
+          }
+          continue;
         }
-      } else {
-        if (
-          Math.random() <
-          dt * 0.12
-        ) {
-          bot.roam +=
-            Math.PI *
-            (Math.random() -
-              0.5);
-        }
-
-        bot.object.position.x +=
-          Math.sin(
-            bot.roam
-          ) *
-          this.c.bots.speed *
-          0.18 *
-          dt;
-
-        bot.object.position.z +=
-          Math.cos(
-            bot.roam
-          ) *
-          this.c.bots.speed *
-          0.18 *
-          dt;
-
-        this.map.resolve(
-          bot.object.position,
-          0.4
-        );
       }
+      if(Math.random()<dt*.12) bot.roam+=Math.PI*(Math.random()-.5);
+      bot.object.position.x+=Math.sin(bot.roam)*this.c.bots.speed*.18*dt;
+      bot.object.position.z+=Math.cos(bot.roam)*this.c.bots.speed*.18*dt;
+      this.map.resolve(bot.object.position,.4);
     }
   }
 }
