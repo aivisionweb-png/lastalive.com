@@ -518,6 +518,7 @@ function startMatch() {
     player.cameraMode = "FPP";
     player.setCameraMode("FPP");
     battleRoyale?.start();
+    bots.relocateAroundPlayer?.();
 
     player.yaw =
       0;
@@ -811,10 +812,17 @@ function loop() {
   if (running) {
 
     player.update(dt);
+
     if(input.consumeCameraToggle()){
       const mode=player.setCameraMode(player.cameraMode==="FPP"?"TPP":"FPP");
       ui.toast(mode+" CAMERA");
     }
+
+    const mobileWeapon=input.consumeWeaponSlot?.();
+    if(mobileWeapon>=0) weapons.switch(mobileWeapon);
+
+    if(input.consumeReload?.()) weapons.reload();
+
     battleRoyale?.update(dt, bots);
     multiplayerAvatars?.update();
 
@@ -826,7 +834,7 @@ function loop() {
       camera,
       dt
     );
-    ui.scope?.(input.isAim(), weapons.current);
+    ui.scope?.(player.cameraMode==="FPP" && input.isAim(), weapons.current);
 
     /*
     FIRE
