@@ -113,17 +113,9 @@ function initGame() {
 
   scene = new T.Scene();
 
-  scene.background =
-    new T.Color(
-      0x536c69
-    );
+  scene.background = new T.Color(0x07111f);
 
-  scene.fog =
-    new T.Fog(
-      0x536c69,
-      260,
-      1450
-    );
+  scene.fog = new T.Fog(0x07111f, 180, 1250);
 
   /*
   =========================================
@@ -200,19 +192,12 @@ function initGame() {
   */
 
   const hemi =
-    new T.HemisphereLight(
-      0xd9eee8,
-      0x18241f,
-      2.2
-    );
+    new T.HemisphereLight(0x9fe7ff, 0x050914, 2.8);
 
   scene.add(hemi);
 
   const sun =
-    new T.DirectionalLight(
-      0xffe3bd,
-      3.6
-    );
+    new T.DirectionalLight(0xffb45e, 4.2);
 
   sun.position.set(
     -300,
@@ -248,10 +233,7 @@ function initGame() {
   scene.add(sun);
 
   const rim =
-    new T.DirectionalLight(
-      0x72b9c4,
-      0.7
-    );
+    new T.DirectionalLight(0x36d9ff, 1.15);
 
   rim.position.set(
     500,
