@@ -167,7 +167,7 @@ export class BotManager {
       roam:Math.random()*Math.PI*2,
       outfitIndex:index%outfits.length,
       object:group,
-      hit:damage=>this.hit(data,damage)
+      hit:(damage,attacker=null)=>this.hit(data,damage,attacker)
     };
 
     group.userData.bot=data;
