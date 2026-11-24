@@ -42,6 +42,8 @@ export class PlayerController {
     this.recoil = 0;
 
     this.walkTime = 0;
+    this.cameraMode = "FPP";
+    this.character = this.buildCharacter();
 
     this.viewModel =
       new T.Group();
@@ -53,6 +55,40 @@ export class PlayerController {
       null;
 
     this.buildWeaponHands();
+    this.character.visible = true;
+    this.map.root.add(this.character);
+  }
+
+  buildCharacter() {
+    const T=this.T, g=new T.Group();
+    const skin=new T.MeshStandardMaterial({color:0xc58a68,roughness:.8});
+    const suit=new T.MeshStandardMaterial({color:0x263849,roughness:.72,metalness:.08});
+    const vest=new T.MeshStandardMaterial({color:0x17212a,roughness:.65,metalness:.2});
+    const accent=new T.MeshStandardMaterial({color:0xe39a3b,roughness:.45,metalness:.25});
+    const boot=new T.MeshStandardMaterial({color:0x101417,roughness:.9});
+    const torso=new T.Mesh(new T.CapsuleGeometry(.36,.72,6,10),suit); torso.position.y=1.05; g.add(torso);
+    const vestMesh=new T.Mesh(new T.BoxGeometry(.76,.62,.48),vest); vestMesh.position.set(0,1.1,0); g.add(vestMesh);
+    const head=new T.Mesh(new T.SphereGeometry(.27,16,12),skin); head.position.y=1.88; g.add(head);
+    const helmet=new T.Mesh(new T.SphereGeometry(.31,16,10),vest); helmet.scale.y=.58; helmet.position.y=2.08; g.add(helmet);
+    const visor=new T.Mesh(new T.BoxGeometry(.4,.08,.06),accent); visor.position.set(0,2.03,-.28); g.add(visor);
+    for(const x of [-.21,.21]){
+      const arm=new T.Mesh(new T.CapsuleGeometry(.11,.55,5,8),suit); arm.position.set(x,1.03,0); arm.rotation.z=x>0?-0.18:0.18; g.add(arm);
+      const hand=new T.Mesh(new T.SphereGeometry(.12,10,8),skin); hand.position.set(x*.98,.72,-.04); g.add(hand);
+      const leg=new T.Mesh(new T.CapsuleGeometry(.13,.62,5,8),suit); leg.position.set(x*.48,.43,0); g.add(leg);
+      const foot=new T.Mesh(new T.BoxGeometry(.2,.13,.42),boot); foot.position.set(x*.48,.1,-.08); g.add(foot);
+    }
+    const pack=new T.Mesh(new T.BoxGeometry(.48,.72,.22),vest); pack.position.set(0,1.15,.28); g.add(pack);
+    const beacon=new T.Mesh(new T.TorusGeometry(.55,.025,8,24),new T.MeshBasicMaterial({color:0xff4b3e,transparent:true,opacity:.65,depthWrite:false})); beacon.rotation.x=Math.PI/2; beacon.position.y=.04; g.add(beacon);
+    g.traverse(o=>{o.castShadow=true;o.receiveShadow=true});
+    g.userData.character=true;
+    return g;
+  }
+
+  setCameraMode(mode) {
+    this.cameraMode = mode === "TPP" ? "TPP" : "FPP";
+    if(this.cameraMode==="TPP") this.viewModel.visible=false;
+    this.character.visible=this.cameraMode==="TPP";
+    return this.cameraMode;
   }
 
   buildWeaponHands() {
@@ -654,6 +690,21 @@ export class PlayerController {
     dt
   ) {
 
+    if(this.cameraMode==="TPP"){
+      this.viewModel.visible=false;
+      this.character.visible=true;
+      this.character.position.set(0,0,0);
+      this.character.rotation.y=this.yaw;
+      const behind=new this.T.Vector3(Math.sin(this.yaw),0,Math.cos(this.yaw));
+      const target=this.object.position.clone().add(new this.T.Vector3(0,1.35,0));
+      const desired=this.object.position.clone().add(new this.T.Vector3(0,1.65,0)).addScaledVector(behind,4.6);
+      camera.position.lerp(desired,Math.min(1,dt*10));
+      camera.lookAt(target);
+      camera.fov += (72-camera.fov)*Math.min(1,dt*10);
+      camera.updateProjectionMatrix();
+      return;
+    }
+
     /*
     =========================================
     TRUE FPP POSITION
@@ -859,6 +910,15 @@ export class PlayerController {
     }
 
     return this.alive;
+  }
+
+  setWeapon(def) {
+    this.currentWeapon = def;
+    this.buildWeaponHandsWeapon(def);
+  }
+
+  buildWeaponHandsWeapon(def) {
+    // WeaponSystem owns the normal weapon model; keep current model unchanged.
   }
 
   addRecoil(
