@@ -788,3 +788,32 @@ html,body,#game,#touchLook,#mobileControls{touch-action:none!important}
   #mobileControls{pointer-events:auto!important;z-index:50!important}
   #touchLook{z-index:45!important}
 }
+
+/* CALM LOBBY / AGGRESSIVE COMBAT VISUALS */
+.menu-screen{
+  background:
+    radial-gradient(circle at 70% 30%,rgba(53,217,255,.055),transparent 34%),
+    radial-gradient(circle at 20% 75%,rgba(77,225,189,.04),transparent 35%),
+    #071016!important;
+}
+.menu-screen:before{opacity:.18!important}
+.menu-topbar{border-color:rgba(180,220,225,.1)!important}
+.hero-copy h1{letter-spacing:-2px!important}
+.hero-copy h1 span{color:#8fdfe5!important;text-shadow:0 0 28px rgba(143,223,229,.12)!important}
+.hero-text{color:#91a4ab!important}
+.deploy-panel{
+  background:rgba(8,17,23,.82)!important;
+  border-color:rgba(160,205,210,.13)!important;
+  box-shadow:0 25px 80px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.035)!important;
+}
+.lobby-badge{color:#86aeb3!important;border-color:rgba(134,174,179,.16)!important;background:rgba(134,174,179,.05)!important}
+.live-dot{color:#82d6c4!important}
+.deploy-btn{
+  background:linear-gradient(135deg,#d5eeee,#87cdd1)!important;
+  color:#071014!important;
+  border-color:rgba(220,255,255,.6)!important;
+  box-shadow:0 14px 36px rgba(100,205,210,.12)!important;
+}
+.deploy-btn:hover{filter:brightness(1.05)!important}
+.feature-row b{color:#b9d9dc!important}
+.mode.active{border-color:rgba(126,202,207,.26)!important;background:rgba(126,202,207,.045)!important}
