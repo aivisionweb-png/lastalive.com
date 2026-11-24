@@ -11,6 +11,7 @@ export class InputController {
     this.aim = false;
     this.reload = false;
     this.weaponSlot = -1;
+    this.cameraToggle = false;
 
     this.joystick = {
       x: 0,
@@ -27,9 +28,8 @@ export class InputController {
       e => {
         this.keys.add(e.code);
 
-        if (e.code === "KeyQ") {
-          this.aim = !this.aim;
-        }
+        if (e.code === "KeyQ") this.aim = !this.aim;
+        if (e.code === "KeyV") this.cameraToggle = true;
 
         if (e.code === "Space") {
           this.jump = true;
@@ -381,6 +381,8 @@ export class InputController {
       this.keys.has("KeyC")
     );
   }
+
+  consumeCameraToggle(){ const v=this.cameraToggle; this.cameraToggle=false; return v; }
 
   isAim() {
     return this.aim;
