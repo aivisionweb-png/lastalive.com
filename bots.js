@@ -22,214 +22,156 @@ export class BotManager {
   }
 
   make(index) {
-    const T = this.T;
+    const T=this.T;
+    const group=new T.Group();
 
-    const group =
-      new T.Group();
-
-    const outfits = [
-      [0x5b3434, 0x29302d],
-      [0x34546b, 0x202b2a],
-      [0x5b5a32, 0x32372a],
-      [0x563d60, 0x29262f],
-      [0x4d3f2c, 0x2a2924],
-      [0x2d554a, 0x202c29]
+    /* Character roster: distinct outfits so enemies no longer look like clones. */
+    const outfits=[
+      {shirt:0x243b53,vest:0x101820,accent:0x35d9ff, pants:0x15191d},
+      {shirt:0x5a2630,vest:0x241116,accent:0xff5268, pants:0x17171a},
+      {shirt:0x4b5430,vest:0x202719,accent:0xd6d65a, pants:0x252820},
+      {shirt:0x46335b,vest:0x21172c,accent:0xc084ff, pants:0x18151e},
+      {shirt:0x7a5635,vest:0x2b2016,accent:0xffb45e, pants:0x201a16},
+      {shirt:0x28584c,vest:0x12251f,accent:0x4de1bd, pants:0x17211e},
+      {shirt:0x353b43,vest:0x12151a,accent:0xffffff, pants:0x111317},
+      {shirt:0x7a3030,vest:0x241014,accent:0xff9b45, pants:0x171214}
     ];
+    const o=outfits[index%outfits.length];
 
-    const [
-      shirt,
-      vest
-    ] =
-      outfits[
-        index %
-          outfits.length
-      ];
+    const mat=(color,rough=.72,metal=0)=>new T.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+    const shirt=mat(o.shirt,.78);
+    const vest=mat(o.vest,.62,.18);
+    const pants=mat(o.pants,.86);
+    const skin=mat([0xb9795b,0xc98d6d,0x9d674f,0xd5a07d][index%4],.9);
+    const boot=mat(0x0b0e11,.9,.08);
+    const accent=mat(o.accent,.4,.3);
 
-    const body =
-      new T.Mesh(
-        new T.CapsuleGeometry(
-          0.36,
-          0.85,
-          6,
-          9
-        ),
-        new T.MeshStandardMaterial({
-          color: shirt,
-          roughness: 0.8
-        })
-      );
+    /* Legs + boots */
+    for(const x of [-.19,.19]){
+      const leg=new T.Mesh(new T.CapsuleGeometry(.13,.62,6,9),pants);
+      leg.position.set(x,.43,0); group.add(leg);
 
-    body.position.y =
-      1.02;
+      const bootMesh=new T.Mesh(new T.BoxGeometry(.22,.16,.46),boot);
+      bootMesh.position.set(x,.11,-.1); group.add(bootMesh);
+    }
 
-    group.add(body);
+    /* Torso */
+    const body=new T.Mesh(new T.CapsuleGeometry(.36,.82,7,10),shirt);
+    body.position.y=1.08; group.add(body);
 
-    const head =
-      new T.Mesh(
-        new T.SphereGeometry(
-          0.27,
-          14,
-          9
-        ),
-        new T.MeshStandardMaterial({
-          color: 0xb9795b,
-          roughness: 0.9
-        })
-      );
+    /* Tactical vest / jacket */
+    const vestMesh=new T.Mesh(new T.BoxGeometry(.78,.62,.5),vest);
+    vestMesh.position.set(0,1.13,-.01); group.add(vestMesh);
 
-    head.position.y =
-      1.85;
+    /* Shoulder pads */
+    for(const x of [-.43,.43]){
+      const shoulder=new T.Mesh(new T.SphereGeometry(.15,10,7),vest);
+      shoulder.scale.set(1,.72,1); shoulder.position.set(x,1.35,0); group.add(shoulder);
+    }
 
-    head.userData.head =
-      true;
+    /* Neck + head */
+    const neck=new T.Mesh(new T.CylinderGeometry(.11,.11,.16,10),skin);
+    neck.position.y=1.63; group.add(neck);
 
+    const head=new T.Mesh(new T.SphereGeometry(.27,16,12),skin);
+    head.position.y=1.88;
+    head.userData.head=true;
     group.add(head);
 
-    const helmet =
-      new T.Mesh(
-        new T.SphereGeometry(
-          0.3,
-          14,
-          8
-        ),
-        new T.MeshStandardMaterial({
-          color: vest,
-          roughness: 0.7,
-          metalness: 0.15
-        })
-      );
+    /* Different helmet / cap styles */
+    const helmetType=index%4;
+    if(helmetType===0 || helmetType===1){
+      const helmet=new T.Mesh(new T.SphereGeometry(.31,16,10),vest);
+      helmet.scale.y=.58; helmet.position.y=2.08; group.add(helmet);
 
-    helmet.scale.y =
-      0.55;
+      const visor=new T.Mesh(new T.BoxGeometry(.42,.075,.07),accent);
+      visor.position.set(0,2.03,-.27); group.add(visor);
+    }else if(helmetType===2){
+      const cap=new T.Mesh(new T.SphereGeometry(.3,14,9),vest);
+      cap.scale.set(1,.48,1); cap.position.set(0,2.05,0); group.add(cap);
 
-    helmet.position.y =
-      2.05;
+      const brim=new T.Mesh(new T.BoxGeometry(.38,.07,.22),accent);
+      brim.position.set(0,2.02,-.27); group.add(brim);
+    }else{
+      const band=new T.Mesh(new T.TorusGeometry(.28,.055,6,18),accent);
+      band.rotation.x=Math.PI/2; band.position.y=2.0; group.add(band);
+    }
 
-    group.add(helmet);
+    /* Arms + hands */
+    for(const x of [-.22,.22]){
+      const arm=new T.Mesh(new T.CapsuleGeometry(.11,.55,6,9),shirt);
+      arm.position.set(x,1.04,0);
+      arm.rotation.z=x>0?-0.16:0.16;
+      group.add(arm);
 
-    const vestMesh =
-      new T.Mesh(
-        new T.BoxGeometry(
-          0.82,
-          0.7,
-          0.5
-        ),
-        new T.MeshStandardMaterial({
-          color: vest,
-          roughness: 0.7
-        })
-      );
+      const glove=new T.Mesh(new T.SphereGeometry(.115,10,8),index%3===0?skin:boot);
+      glove.position.set(x*.98,.72,-.05); group.add(glove);
+    }
 
-    vestMesh.position.y =
-      1.08;
+    /* Backpack */
+    const pack=new T.Mesh(new T.BoxGeometry(.48,.72,.24),vest);
+    pack.position.set(0,1.15,.3); group.add(pack);
 
-    group.add(vestMesh);
+    /* Outfit accent stripe */
+    const stripe=new T.Mesh(new T.BoxGeometry(.48,.08,.515),accent);
+    stripe.position.set(0,1.28,-.26); group.add(stripe);
 
-    const gun =
-      new T.Mesh(
-        new T.BoxGeometry(
-          0.13,
-          0.13,
-          1.1
-        ),
-        new T.MeshStandardMaterial({
-          color: 0x101313,
-          metalness: 0.65,
-          roughness: 0.3
-        })
-      );
-
-    gun.position.set(
-      0.4,
-      1.1,
-      -0.55
+    /* Weapon */
+    const gun=new T.Mesh(
+      new T.BoxGeometry(.13,.13,1.1),
+      mat(0x0a0d0f,.3,.7)
     );
-
+    gun.position.set(.4,1.1,-.55);
+    gun.rotation.z=-.08;
     group.add(gun);
 
-    // High-visibility tactical enemy outline / beacon.
-    const glowMat = new T.MeshBasicMaterial({
-      color: 0xff234f,
-      transparent: true,
-      opacity: 0.9,
-      depthWrite: false,
-      blending: T.AdditiveBlending
+    /* High-visibility enemy beacon */
+    const glowMat=new T.MeshBasicMaterial({
+      color:0xff234f,transparent:true,opacity:.9,
+      depthWrite:false,blending:T.AdditiveBlending
     });
+    const ring=new T.Mesh(new T.TorusGeometry(.62,.045,8,24),glowMat);
+    ring.rotation.x=Math.PI/2; ring.position.y=.06; group.add(ring);
 
-    const ring = new T.Mesh(
-      new T.TorusGeometry(0.62, 0.045, 8, 24),
-      glowMat
-    );
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = 0.06;
-    group.add(ring);
+    const beacon=new T.Mesh(new T.CylinderGeometry(.035,.035,3.4,8),glowMat);
+    beacon.position.y=1.8; group.add(beacon);
 
-    const beacon = new T.Mesh(
-      new T.CylinderGeometry(0.035, 0.035, 3.4, 8),
-      glowMat
-    );
-    beacon.position.y = 1.8;
-    group.add(beacon);
+    const beaconTop=new T.Mesh(new T.SphereGeometry(.11,8,8),glowMat);
+    beaconTop.position.y=3.5; group.add(beaconTop);
 
-    const beaconTop = new T.Mesh(
-      new T.SphereGeometry(0.11, 8, 8),
-      glowMat
-    );
-    beaconTop.position.y = 3.5;
-    group.add(beaconTop);
+    group.userData.enemyGlow={ring,beacon,beaconTop};
 
-    group.userData.enemyGlow = { ring, beacon, beaconTop };
-
-    // Billboard enemy identifier: always faces the camera and stays readable.
     const labelCanvas=document.createElement("canvas");
     labelCanvas.width=256; labelCanvas.height=64;
     const lctx=labelCanvas.getContext("2d");
     lctx.fillStyle="rgba(120,8,20,.86)"; lctx.fillRect(4,8,248,48);
     lctx.strokeStyle="#ff5268"; lctx.lineWidth=3; lctx.strokeRect(4,8,248,48);
-    lctx.font="900 26px Arial"; lctx.textAlign="center"; lctx.textBaseline="middle"; lctx.fillStyle="#fff";
-    lctx.fillText("ENEMY",128,32);
-    const label=new T.Sprite(new T.SpriteMaterial({map:new T.CanvasTexture(labelCanvas),transparent:true,depthTest:false,depthWrite:false}));
+    lctx.font="900 26px Arial"; lctx.textAlign="center"; lctx.textBaseline="middle";
+    lctx.fillStyle="#fff"; lctx.fillText("ENEMY",128,32);
+    const label=new T.Sprite(new T.SpriteMaterial({
+      map:new T.CanvasTexture(labelCanvas),
+      transparent:true,depthTest:false,depthWrite:false
+    }));
     label.scale.set(1.65,.42,1); label.position.y=3.9; label.renderOrder=20; group.add(label);
 
-    const data = {
-      alive: true,
+    group.traverse(obj=>{
+      obj.castShadow=true;
+      obj.receiveShadow=true;
+    });
 
-      hp: 100,
-
-      armor:
-        40 +
-        Math.random() *
-          60,
-
-      cool:
-        0.3 +
-        Math.random(),
-
-      roam:
-        Math.random() *
-        Math.PI *
-        2,
-
-      object: group,
-
-      hit: damage =>
-        this.hit(
-          data,
-          damage
-        )
+    const data={
+      alive:true,
+      hp:100,
+      armor:40+Math.random()*60,
+      cool:.3+Math.random(),
+      roam:Math.random()*Math.PI*2,
+      outfitIndex:index%outfits.length,
+      object:group,
+      hit:damage=>this.hit(data,damage)
     };
 
-    group.userData.bot =
-      data;
-
-    group.userData.botName =
-      "ENEMY " +
-      String(index + 1)
-        .padStart(
-          2,
-          "0"
-        );
-
+    group.userData.bot=data;
+    group.userData.botName="ENEMY "+String(index+1).padStart(2,"0");
     return data;
   }
 
