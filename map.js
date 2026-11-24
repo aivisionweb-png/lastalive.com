@@ -179,6 +179,22 @@ export class WorldMap {
       }
     }
 
+    /* Architectural facade strips: more depth without expensive textures. */
+    const trimMat=new this.T.MeshStandardMaterial({
+      color:0x17242a,metalness:.45,roughness:.32
+    });
+    const glowMat=new this.T.MeshBasicMaterial({
+      color:0x35d9ff,transparent:true,opacity:.38,depthWrite:false
+    });
+    for(const side of [-1,1]){
+      const facade=new this.T.Mesh(new this.T.BoxGeometry(.18,Math.max(2,h*.78),d*.78),trimMat);
+      facade.position.set(x+side*w*.5,Math.max(2,h*.39),z);
+      facade.castShadow=false; facade.receiveShadow=false; this.root.add(facade);
+    }
+    const roofLine=new this.T.Mesh(new this.T.BoxGeometry(w*.94,.12,.08),glowMat);
+    roofLine.position.set(x,h+.76,z-d*.47);
+    this.root.add(roofLine);
+
     /*
     ROOF AC UNITS
     */
