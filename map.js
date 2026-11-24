@@ -27,7 +27,8 @@ export class WorldMap {
     return new this.T.MeshStandardMaterial({
       color,
       roughness,
-      metalness
+      metalness,
+      envMapIntensity: 0.85
     });
   }
 
@@ -128,7 +129,7 @@ export class WorldMap {
       new this.T.MeshStandardMaterial({
         color: 0x86a7a2,
         emissive: 0x243f3d,
-        emissiveIntensity: 0.35,
+        emissiveIntensity: 0.9,
         metalness: 0.25,
         roughness: 0.3
       });
@@ -335,7 +336,9 @@ export class WorldMap {
           9
         ),
         this.material(
-          0x244d35
+          0x123d35,
+          0.95,
+          0.05
         )
       );
 
@@ -367,7 +370,7 @@ export class WorldMap {
       w,
       0.08,
       d,
-      0x202523,
+      0x111a20,
       false
     );
 
@@ -402,7 +405,7 @@ export class WorldMap {
           0.025,
           0.22,
 
-          0xd0bc69,
+          0xffb84d,
           false
         );
 
@@ -597,8 +600,8 @@ export class WorldMap {
           size
         ),
         this.material(
-          0x354b3f,
-          1
+          0x182d2b,
+          0.95
         )
       );
 
@@ -625,9 +628,9 @@ export class WorldMap {
           3100
         ),
         this.material(
-          0x17434c,
-          0.25,
-          0.3
+          0x0b4e63,
+          0.18,
+          0.65
         )
       );
 
@@ -1048,6 +1051,63 @@ export class WorldMap {
       }
 
     ];
+
+    /* =========================================
+       DISTRICT 09 ATMOSPHERE + LANDMARK LIGHTS
+       ========================================= */
+    const neonMat = new T.MeshBasicMaterial({
+      color: 0x35d9ff,
+      transparent: true,
+      opacity: 0.75,
+      depthWrite: false
+    });
+    const orangeMat = new T.MeshBasicMaterial({
+      color: 0xff8b3d,
+      transparent: true,
+      opacity: 0.7,
+      depthWrite: false
+    });
+
+    // Downtown signal pylons
+    for (const p of [
+      [-90, -90], [90, -90], [-90, 90], [90, 90]
+    ]) {
+      const pole = new T.Mesh(new T.CylinderGeometry(0.035,0.06,9,8), neonMat);
+      pole.position.set(p[0],4.5,p[1]);
+      this.root.add(pole);
+      const orb = new T.Mesh(new T.SphereGeometry(0.16,10,8), neonMat);
+      orb.position.set(p[0],9.2,p[1]);
+      this.root.add(orb);
+    }
+
+    // Street light network
+    for(let i=-900;i<=900;i+=120){
+      for(const side of [-1,1]){
+        const x=i;
+        const z=side*24;
+        const pole=new T.Mesh(new T.CylinderGeometry(.045,.08,6.5,7),orangeMat);
+        pole.position.set(x,3.25,z);
+        this.root.add(pole);
+        const lamp=new T.PointLight(0xff8b3d,1.2,30);
+        lamp.position.set(x,6.4,z);
+        this.root.add(lamp);
+      }
+    }
+
+    // Floating dust / atmosphere particles
+    const dustGeo=new T.BufferGeometry();
+    const dustCount=900;
+    const dustPos=new Float32Array(dustCount*3);
+    for(let i=0;i<dustCount;i++){
+      dustPos[i*3]=(Math.random()-.5)*2200;
+      dustPos[i*3+1]=1+Math.random()*55;
+      dustPos[i*3+2]=(Math.random()-.5)*2200;
+    }
+    dustGeo.setAttribute("position",new T.BufferAttribute(dustPos,3));
+    const dust=new T.Points(dustGeo,new T.PointsMaterial({
+      color:0x7fdcff,size:.7,transparent:true,opacity:.16,depthWrite:false
+    }));
+    this.root.add(dust);
 
     return this.root;
   }
