@@ -1,70 +1,381 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>LAST ALIVE</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
+  >
+
+  <title>LAST ALIVE</title>
+
+  <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-<canvas id="game"></canvas>
-<div id="vignette"></div>
-<div id="damageFlash"></div>
-<div id="hitMarker">×</div>
 
-<div id="menu" class="screen">
-  <div class="menu-card">
-    <div class="eyebrow">ORIGINAL BATTLE ROYALE</div>
-    <h1>LAST<span>//</span>ALIVE</h1>
-    <p>Drop into the district. Loot, fight, survive the zone and become the last survivor.</p>
-    <input id="playerName" maxlength="14" placeholder="PLAYER NAME" autocomplete="off">
-    <button id="playBtn" class="primary">ENTER MATCH</button>
-    <div class="mini-help">WASD / ARROWS MOVE · SHIFT SPRINT · SPACE JUMP · C CROUCH · MOUSE AIM · LMB FIRE · R RELOAD · 1/2/3 WEAPONS</div>
+  <canvas id="game"></canvas>
+
+  <div id="vignette"></div>
+  <div id="damageFlash"></div>
+  <div id="hitMarker">×</div>
+
+
+  <!-- =========================
+       MAIN MENU
+  ========================== -->
+
+  <div id="menu" class="screen">
+
+    <div class="menu-card">
+
+      <div class="eyebrow">
+        ORIGINAL BATTLE ROYALE
+      </div>
+
+      <h1>
+        LAST<span>//</span>ALIVE
+      </h1>
+
+      <p>
+        Drop into the district. Loot, fight, survive
+        the zone and become the last survivor.
+      </p>
+
+      <input
+        id="playerName"
+        maxlength="14"
+        placeholder="PLAYER NAME"
+        autocomplete="off"
+      >
+
+      <button
+        id="playBtn"
+        class="primary"
+        type="button"
+      >
+        ENTER MATCH
+      </button>
+
+      <div class="mini-help">
+        WASD / ARROWS MOVE ·
+        SHIFT SPRINT ·
+        SPACE JUMP ·
+        C CROUCH ·
+        MOUSE AIM ·
+        LMB FIRE ·
+        R RELOAD ·
+        1/2/3 WEAPONS
+      </div>
+
+    </div>
+
   </div>
-</div>
 
-<div id="hud" class="hidden">
-  <div class="top-left"><div class="brand">LAST<span>//</span>ALIVE</div><div class="match-stat">ALIVE <b id="alive">15</b></div></div>
-  <div id="compass">N</div>
-  <div class="zone-card"><small>SAFE ZONE</small><b id="zoneDistance">250m</b><span id="zoneStatus">STABLE</span></div>
-  <div class="crosshair"><i></i><i></i><i></i><i></i></div>
-  <div class="bottom-left">
-    <div class="bars"><div><span>HP</span><b id="hpText">100</b></div><div class="bar"><i id="hpBar"></i></div></div>
-    <div class="bars armor"><div><span>ARMOR</span><b id="armorText">75</b></div><div class="bar"><i id="armorBar"></i></div></div>
+
+  <!-- =========================
+       HUD
+  ========================== -->
+
+  <div id="hud" class="hidden">
+
+    <div class="top-left">
+
+      <div class="brand">
+        LAST<span>//</span>ALIVE
+      </div>
+
+      <div class="match-stat">
+        ALIVE
+        <b id="alive">15</b>
+      </div>
+
+    </div>
+
+
+    <div id="compass">
+      N
+    </div>
+
+
+    <div class="zone-card">
+
+      <small>
+        SAFE ZONE
+      </small>
+
+      <b id="zoneDistance">
+        250m
+      </b>
+
+      <span id="zoneStatus">
+        STABLE
+      </span>
+
+    </div>
+
+
+    <div class="crosshair">
+
+      <i></i>
+      <i></i>
+      <i></i>
+      <i></i>
+
+    </div>
+
+
+    <!-- PLAYER STATUS -->
+
+    <div class="bottom-left">
+
+      <div class="bars">
+
+        <div>
+          <span>HP</span>
+          <b id="hpText">100</b>
+        </div>
+
+        <div class="bar">
+          <i id="hpBar"></i>
+        </div>
+
+      </div>
+
+
+      <div class="bars armor">
+
+        <div>
+          <span>ARMOR</span>
+          <b id="armorText">75</b>
+        </div>
+
+        <div class="bar">
+          <i id="armorBar"></i>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- WEAPON -->
+
+    <div class="bottom-right">
+
+      <div class="weapon-info">
+
+        <small id="weaponName">
+          AR-01
+        </small>
+
+        <strong id="ammo">
+          30 / 120
+        </strong>
+
+        <span id="reloadText"></span>
+
+      </div>
+
+    </div>
+
+
+    <!-- KILL FEED -->
+
+    <div
+      class="killfeed"
+      id="killfeed"
+    ></div>
+
+
+    <!-- MINIMAP -->
+
+    <div class="minimap-wrap">
+
+      <canvas
+        id="minimap"
+        width="180"
+        height="180"
+      ></canvas>
+
+    </div>
+
+
+    <!-- TOAST -->
+
+    <div
+      class="toast"
+      id="toast"
+    ></div>
+
+
+    <!-- DEBUG -->
+
+    <div
+      id="debugPanel"
+      class="debug hidden"
+    ></div>
+
   </div>
-  <div class="bottom-right">
-    <div class="weapon-info"><small id="weaponName">AR-01</small><strong id="ammo">30 / 120</strong><span id="reloadText"></span></div>
+
+
+  <!-- =========================
+       RESULT SCREEN
+  ========================== -->
+
+  <div
+    id="result"
+    class="screen hidden"
+  >
+
+    <div class="menu-card result-card">
+
+      <div
+        class="eyebrow"
+        id="resultEyebrow"
+      >
+        MATCH COMPLETE
+      </div>
+
+      <h2 id="resultTitle">
+        YOU ARE THE LAST ALIVE
+      </h2>
+
+      <p id="resultText"></p>
+
+
+      <div class="result-grid">
+
+        <div>
+          KILLS
+          <b id="resultKills">
+            0
+          </b>
+        </div>
+
+        <div>
+          PLACEMENT
+          <b id="resultPlace">
+            #1
+          </b>
+        </div>
+
+        <div>
+          TIME
+          <b id="resultTime">
+            00:00
+          </b>
+        </div>
+
+      </div>
+
+
+      <button
+        id="againBtn"
+        class="primary"
+        type="button"
+      >
+        PLAY AGAIN
+      </button>
+
+      <button
+        id="lobbyBtn"
+        class="secondary"
+        type="button"
+      >
+        RETURN TO LOBBY
+      </button>
+
+    </div>
+
   </div>
-  <div class="killfeed" id="killfeed"></div>
-  <div class="minimap-wrap"><canvas id="minimap" width="180" height="180"></canvas></div>
-  <div class="toast" id="toast"></div>
-  <div id="debugPanel" class="debug hidden"></div>
-</div>
 
-<div id="result" class="screen hidden">
-  <div class="menu-card result-card">
-    <div class="eyebrow" id="resultEyebrow">MATCH COMPLETE</div>
-    <h2 id="resultTitle">YOU ARE THE LAST ALIVE</h2>
-    <p id="resultText"></p>
-    <div class="result-grid"><div>KILLS <b id="resultKills">0</b></div><div>PLACEMENT <b id="resultPlace">#1</b></div><div>TIME <b id="resultTime">00:00</b></div></div>
-    <button id="againBtn" class="primary">PLAY AGAIN</button>
-    <button id="lobbyBtn" class="secondary">RETURN TO LOBBY</button>
+
+  <!-- =========================
+       MOBILE CONTROLS
+  ========================== -->
+
+  <div
+    id="mobileControls"
+    class="hidden"
+  >
+
+    <div id="joystick">
+      <div id="joystickStick"></div>
+    </div>
+
+    <div id="touchLook"></div>
+
+    <button
+      id="fireBtn"
+      class="touch-btn fire"
+      type="button"
+    >
+      FIRE
+    </button>
+
+    <button
+      id="aimBtn"
+      class="touch-btn"
+      type="button"
+    >
+      AIM
+    </button>
+
+    <button
+      id="jumpBtn"
+      class="touch-btn"
+      type="button"
+    >
+      JUMP
+    </button>
+
+    <button
+      id="crouchBtn"
+      class="touch-btn"
+      type="button"
+    >
+      CROUCH
+    </button>
+
+    <button
+      id="sprintBtn"
+      class="touch-btn"
+      type="button"
+    >
+      SPRINT
+    </button>
+
+    <button
+      id="reloadBtn"
+      class="touch-btn small-btn"
+      type="button"
+    >
+      R
+    </button>
+
   </div>
-</div>
 
-<div id="mobileControls" class="hidden">
-  <div id="joystick"><div id="joystickStick"></div></div>
-  <div id="touchLook"></div>
-  <button id="fireBtn" class="touch-btn fire">FIRE</button>
-  <button id="aimBtn" class="touch-btn">AIM</button>
-  <button id="jumpBtn" class="touch-btn">JUMP</button>
-  <button id="crouchBtn" class="touch-btn">CROUCH</button>
-  <button id="sprintBtn" class="touch-btn">SPRINT</button>
-  <button id="reloadBtn" class="touch-btn small-btn">R</button>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js"></script>
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-<script type="module" src="js/main.js"></script>
+  <!-- THREE.JS -->
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js"></script>
+
+
+  <!-- SOCKET.IO -->
+
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
+
+  <!-- IMPORTANT:
+       main.js is in ROOT, NOT /js/
+  -->
+
+  <script
+    type="module"
+    src="./main.js"
+  ></script>
+
 </body>
 </html>
