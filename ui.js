@@ -10,7 +10,7 @@ export class UI{constructor(){this.scene=null;this.name="PLAYER"}bind(){this.el=
       this.el.mobile.style.setProperty("display","block","important");
       this.el.mobile.style.setProperty("visibility","visible","important");
       this.el.mobile.style.setProperty("opacity","1","important");
-      this.el.mobile.style.setProperty("pointer-events","none","important");
+      this.el.mobile.style.setProperty("pointer-events","auto","important");
       document.body.classList.add("la-touch-device");
     }else{
       this.el.mobile.classList.add("hidden");
