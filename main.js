@@ -508,11 +508,11 @@ function startMatch() {
     player.object.position.set(
       0,
       0,
-      650
+      0
     );
 
     player.yaw =
-      Math.PI;
+      0;
 
     player.pitch =
       -0.04;
@@ -574,6 +574,8 @@ function startMatch() {
     ui.alive(
       bots.alive() + 1
     );
+
+    ui.compass?.(player.yaw);
 
     ui.weapon(
       weapons.current,
@@ -855,6 +857,8 @@ function loop() {
     ui.armor(
       player.armor
     );
+
+    ui.compass?.(player.yaw);
 
     ui.alive(
       bots.alive() + 1
