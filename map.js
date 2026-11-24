@@ -1,20 +1,29 @@
-```js
 export class WorldMap {
-  constructor(T, config) {
+
+  constructor(
+    T,
+    config
+  ) {
+
     this.T = T;
     this.config = config;
 
-    this.root = new T.Group();
+    this.root =
+      new T.Group();
+
     this.colliders = [];
+
     this.lootSpawns = [];
+
     this.points = [];
   }
 
-  mat(
+  material(
     color,
-    roughness = 0.82,
+    roughness = 0.8,
     metalness = 0
   ) {
+
     return new this.T.MeshStandardMaterial({
       color,
       roughness,
@@ -22,7 +31,7 @@ export class WorldMap {
     });
   }
 
-  addBox(
+  box(
     x,
     y,
     z,
@@ -31,49 +40,48 @@ export class WorldMap {
     d,
     color,
     solid = true,
-    metal = 0
+    metalness = 0
   ) {
-    const T = this.T;
 
-    const object =
-      new T.Mesh(
-        new T.BoxGeometry(
+    const mesh =
+      new this.T.Mesh(
+        new this.T.BoxGeometry(
           w,
           h,
           d
         ),
-        this.mat(
+        this.material(
           color,
           0.78,
-          metal
+          metalness
         )
       );
 
-    object.position.set(
+    mesh.position.set(
       x,
       y + h / 2,
       z
     );
 
-    object.castShadow =
-      h > 2;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
 
-    object.receiveShadow = true;
-
-    this.root.add(object);
+    this.root.add(
+      mesh
+    );
 
     if (solid) {
+
       this.colliders.push({
         minX: x - w / 2,
         maxX: x + w / 2,
         minZ: z - d / 2,
-        maxZ: z + d / 2,
-        minY: y,
-        maxY: y + h
+        maxZ: z + d / 2
       });
+
     }
 
-    return object;
+    return mesh;
   }
 
   building(
@@ -84,7 +92,8 @@ export class WorldMap {
     h,
     color
   ) {
-    this.addBox(
+
+    this.box(
       x,
       0,
       z,
@@ -95,60 +104,115 @@ export class WorldMap {
       true
     );
 
-    this.addBox(
+    /*
+    ROOFTOP
+    */
+
+    this.box(
       x,
       h,
       z,
-      w * 0.82,
-      0.8,
-      d * 0.82,
+      w * 0.92,
+      0.7,
+      d * 0.92,
       0x252b2a,
       false,
-      0.25
+      0.4
     );
 
-    if (
-      Math.random() > 0.35
+    /*
+    WINDOWS
+    */
+
+    const windowMat =
+      new this.T.MeshStandardMaterial({
+        color: 0x86a7a2,
+        emissive: 0x243f3d,
+        emissiveIntensity: 0.35,
+        metalness: 0.25,
+        roughness: 0.3
+      });
+
+    for (
+      let y = 3;
+      y < h - 1;
+      y += 3.8
     ) {
+
       for (
-        let wx = -w * 0.3;
-        wx <= w * 0.3;
-        wx += 4
+        let ix = -1;
+        ix <= 1;
+        ix++
       ) {
-        for (
-          let wy = 3;
-          wy < h - 1;
-          wy += 4
-        ) {
-          this.addBox(
-            x + wx,
-            wy,
-            z - d / 2 - 0.03,
-            1.3,
-            1.1,
-            0.08,
-            0x6c8c82,
-            false,
-            0.1
+
+        const win =
+          new this.T.Mesh(
+            new this.T.BoxGeometry(
+              1.7,
+              1.25,
+              0.08
+            ),
+            windowMat
           );
-        }
+
+        win.position.set(
+          x +
+            ix *
+              Math.max(
+                3,
+                w * 0.28
+              ),
+
+          y,
+
+          z -
+            d / 2 -
+            0.05
+        );
+
+        this.root.add(
+          win
+        );
       }
     }
 
-    this.lootSpawns.push({
-      x:
-        x +
-        (Math.random() -
-          0.5) *
-          w *
-          0.55,
+    /*
+    ROOF AC UNITS
+    */
 
-      z:
-        z +
-        (Math.random() -
-          0.5) *
-          d *
-          0.55
+    if (h > 14) {
+
+      for (
+        let i = 0;
+        i < 3;
+        i++
+      ) {
+
+        this.box(
+          x -
+            w * 0.25 +
+            i * w * 0.25,
+
+          h + 0.7,
+
+          z,
+
+          2.2,
+          1.2,
+          1.8,
+
+          0x39413e,
+          false,
+          0.5
+        );
+
+      }
+
+    }
+
+    this.lootSpawns.push({
+      x,
+      z
     });
   }
 
@@ -159,51 +223,68 @@ export class WorldMap {
     d,
     h
   ) {
-    this.addBox(
+
+    this.box(
       x,
       0,
       z,
       w,
       h,
       d,
-      0x59605c,
+      0x535a56,
       true,
-      0.45
+      0.4
     );
 
-    this.addBox(
+    /*
+    ROOF
+    */
+
+    this.box(
       x,
       h,
       z,
-      w + 1,
-      0.35,
-      d + 1,
-      0x202826,
+      w + 2,
+      0.4,
+      d + 2,
+      0x252a28,
       false,
-      0.6
+      0.7
     );
 
+    /*
+    ROLL-UP DOORS
+    */
+
     for (
-      let i = -2;
-      i <= 2;
+      let i = -1;
+      i <= 1;
       i++
     ) {
-      this.addBox(
+
+      this.box(
         x +
           i *
             w *
-            0.18,
-        1.2,
+            0.3,
+
+        0.1,
+
         z -
           d / 2 -
-          0.08,
-        w * 0.12,
-        h * 0.45,
-        0.12,
-        0x151a19,
-        false,
-        0.7
+          0.06,
+
+        w * 0.2,
+
+        h * 0.65,
+
+        0.1,
+
+        0x1d2422,
+
+        false
       );
+
     }
 
     this.lootSpawns.push({
@@ -212,84 +293,24 @@ export class WorldMap {
     });
   }
 
-  tower(
-    x,
-    z,
-    h = 28
-  ) {
-    this.addBox(
-      x,
-      0,
-      z,
-      3,
-      h,
-      3,
-      0x252c2b,
-      true,
-      0.7
-    );
-
-    const mast =
-      new this.T.Mesh(
-        new this.T.CylinderGeometry(
-          0.45,
-          0.7,
-          h + 10,
-          8
-        ),
-        this.mat(
-          0x303a37,
-          0.65,
-          0.7
-        )
-      );
-
-    mast.position.set(
-      x,
-      h + 5,
-      z
-    );
-
-    this.root.add(
-      mast
-    );
-
-    for (
-      let y = h * 0.35;
-      y < h;
-      y += 4
-    ) {
-      this.addBox(
-        x,
-        y,
-        z,
-        8,
-        0.18,
-        0.18,
-        0x3f4945,
-        false,
-        0.4
-      );
-    }
-  }
-
   tree(
     x,
     z,
     scale = 1
   ) {
+
     const T = this.T;
 
     const trunk =
       new T.Mesh(
         new T.CylinderGeometry(
-          0.45 * scale,
-          0.65 * scale,
+          0.35 * scale,
+          0.55 * scale,
           5 * scale,
-          7
+          8
         ),
-        this.mat(
-          0x513d2b
+        this.material(
+          0x503927
         )
       );
 
@@ -299,7 +320,8 @@ export class WorldMap {
       z
     );
 
-    trunk.castShadow = true;
+    trunk.castShadow =
+      true;
 
     this.root.add(
       trunk
@@ -308,11 +330,11 @@ export class WorldMap {
     const crown =
       new T.Mesh(
         new T.ConeGeometry(
-          3.4 * scale,
+          3.5 * scale,
           8 * scale,
-          8
+          9
         ),
-        this.mat(
+        this.material(
           0x244d35
         )
       );
@@ -323,7 +345,8 @@ export class WorldMap {
       z
     );
 
-    crown.castShadow = true;
+    crown.castShadow =
+      true;
 
     this.root.add(
       crown
@@ -336,9 +359,10 @@ export class WorldMap {
     w,
     d
   ) {
-    this.addBox(
+
+    this.box(
       x,
-      0.02,
+      0.01,
       z,
       w,
       0.08,
@@ -357,123 +381,203 @@ export class WorldMap {
 
     for (
       let p =
-        -length / 2 + 10;
-      p < length / 2;
-      p += 18
+        -length / 2 + 12;
+
+      p <
+      length / 2;
+
+      p += 24
     ) {
-      if (horizontal) {
-        this.addBox(
+
+      if (
+        horizontal
+      ) {
+
+        this.box(
           x + p,
-          0.07,
+          0.09,
           z,
-          8,
-          0.03,
-          0.18,
-          0xc9b96c,
+
+          10,
+          0.025,
+          0.22,
+
+          0xd0bc69,
           false
         );
+
       } else {
-        this.addBox(
+
+        this.box(
           x,
-          0.07,
+          0.09,
           z + p,
-          0.18,
-          0.03,
-          8,
-          0xc9b96c,
+
+          0.22,
+          0.025,
+          10,
+
+          0xd0bc69,
           false
         );
+
       }
     }
+  }
+
+  tower(
+    x,
+    z,
+    height = 45
+  ) {
+
+    this.box(
+      x,
+      0,
+      z,
+      4,
+      height,
+      4,
+      0x29322f,
+      true,
+      0.7
+    );
+
+    const mast =
+      new this.T.Mesh(
+        new this.T.CylinderGeometry(
+          0.35,
+          0.6,
+          height + 15,
+          8
+        ),
+        this.material(
+          0x303936,
+          0.5,
+          0.8
+        )
+      );
+
+    mast.position.set(
+      x,
+      height + 7,
+      z
+    );
+
+    this.root.add(
+      mast
+    );
   }
 
   district(
     cx,
     cz,
-    kind
+    type
   ) {
-    const colors = {
-      city: 0x4b5352,
-      industrial: 0x555a55,
-      military: 0x465148,
-      village: 0x635a4b
-    };
 
-    const color =
-      colors[kind] ||
-      0x4d5550;
+    let count = 18;
 
-    const count =
-      kind === "city"
-        ? 20
-        : kind === "village"
-        ? 14
-        : 11;
+    if (
+      type === "city"
+    ) {
+      count = 34;
+    }
+
+    if (
+      type === "industrial"
+    ) {
+      count = 18;
+    }
+
+    if (
+      type === "village"
+    ) {
+      count = 25;
+    }
 
     for (
       let i = 0;
       i < count;
       i++
     ) {
+
       const x =
         cx +
         (Math.random() -
           0.5) *
-          210;
+          320;
 
       const z =
         cz +
         (Math.random() -
           0.5) *
-          170;
+          260;
 
       const w =
-        16 +
+        18 +
         Math.random() *
-          28;
+          35;
 
       const d =
-        14 +
+        16 +
         Math.random() *
-          24;
+          32;
 
       const h =
-        kind === "city"
-          ? 8 +
+        type === "city"
+          ? 10 +
             Math.random() *
-              35
-          : 5 +
+              42
+          : type ===
+            "village"
+          ? 5 +
             Math.random() *
-              15;
+              7
+          : 7 +
+            Math.random() *
+              16;
 
       if (
-        kind ===
+        type ===
         "industrial"
       ) {
+
         this.warehouse(
           x,
           z,
-          w + 12,
-          d + 8,
-          Math.max(
-            7,
-            h
-          )
+          w + 15,
+          d + 10,
+          h
         );
+
       } else {
+
+        const colors = [
+          0x4b5352,
+          0x505958,
+          0x5a5d57,
+          0x46524c,
+          0x5b554b
+        ];
+
         this.building(
           x,
           z,
           w,
           d,
           h,
-          color
+          colors[
+            i %
+              colors.length
+          ]
         );
+
       }
     }
   }
 
   build() {
+
     const T = this.T;
 
     const size =
@@ -482,7 +586,7 @@ export class WorldMap {
 
     /*
     =========================================
-    TERRAIN
+    HUGE TERRAIN
     =========================================
     */
 
@@ -492,8 +596,8 @@ export class WorldMap {
           size,
           size
         ),
-        this.mat(
-          0x334a3d,
+        this.material(
+          0x354b3f,
           1
         )
       );
@@ -510,20 +614,20 @@ export class WorldMap {
 
     /*
     =========================================
-    WATER / OUTER BORDER
+    WATER
     =========================================
     */
 
     const water =
       new T.Mesh(
         new T.PlaneGeometry(
-          1900,
-          1900
+          3100,
+          3100
         ),
-        this.mat(
-          0x163f49,
-          0.3,
-          0.25
+        this.material(
+          0x17434c,
+          0.25,
+          0.3
         )
       );
 
@@ -531,7 +635,7 @@ export class WorldMap {
       -Math.PI / 2;
 
     water.position.y =
-      -1.7;
+      -2;
 
     this.root.add(
       water
@@ -539,50 +643,50 @@ export class WorldMap {
 
     /*
     =========================================
-    MAIN ROAD NETWORK
+    MAIN ROAD GRID
     =========================================
     */
 
     this.road(
       0,
       0,
-      1250,
-      20
+      2200,
+      28
     );
 
     this.road(
       0,
       0,
-      20,
-      1250
+      28,
+      2200
     );
 
     this.road(
-      -330,
+      -520,
       0,
-      20,
-      1250
+      24,
+      1900
     );
 
     this.road(
-      330,
+      520,
       0,
-      20,
-      1250
-    );
-
-    this.road(
-      0,
-      -330,
-      1250,
-      20
+      24,
+      1900
     );
 
     this.road(
       0,
-      330,
-      1250,
-      20
+      -520,
+      1900,
+      24
+    );
+
+    this.road(
+      0,
+      520,
+      1900,
+      24
     );
 
     /*
@@ -592,26 +696,26 @@ export class WorldMap {
     */
 
     this.district(
-      -350,
-      -350,
+      -520,
+      -520,
       "city"
     );
 
     this.district(
-      350,
-      -350,
+      520,
+      -520,
       "industrial"
     );
 
     this.district(
-      -350,
-      350,
+      -520,
+      520,
       "military"
     );
 
     this.district(
-      350,
-      350,
+      520,
+      520,
       "village"
     );
 
@@ -623,101 +727,104 @@ export class WorldMap {
 
     /*
     =========================================
-    MILITARY FORT
+    MILITARY BASE
     =========================================
     */
 
-    this.addBox(
-      -350,
+    this.box(
+      -520,
       0,
-      350,
-      300,
+      520,
+      400,
       2,
-      260,
-      0x2b302d,
+      330,
+      0x29322d,
       false
     );
 
     for (
-      let x = -470;
-      x <= -230;
-      x += 60
+      let x = -690;
+      x <= -350;
+      x += 70
     ) {
-      this.addBox(
+
+      this.box(
         x,
         0,
-        215,
-        8,
-        3,
+        350,
+        9,
+        4,
         20,
-        0x70746e,
+        0x6b746e,
         true
       );
 
-      this.addBox(
+      this.box(
         x,
         0,
-        485,
-        8,
-        3,
+        690,
+        9,
+        4,
         20,
-        0x70746e,
+        0x6b746e,
         true
       );
+
     }
 
     this.tower(
-      -470,
-      350,
-      32
+      -700,
+      520,
+      55
     );
 
     this.tower(
-      -230,
-      350,
-      32
+      -340,
+      520,
+      55
     );
 
     /*
     =========================================
-    IRON YARD / CONTAINERS
+    IRON YARD
     =========================================
     */
 
+    const containerColors = [
+      0x7a3d32,
+      0x315e65,
+      0x695c38,
+      0x3c5145
+    ];
+
     for (
       let i = 0;
-      i < 26;
+      i < 55;
       i++
     ) {
+
       const x =
-        230 +
+        520 +
         (Math.random() -
           0.5) *
-          300;
+          400;
 
       const z =
-        -350 +
+        -520 +
         (Math.random() -
           0.5) *
-          210;
+          320;
 
-      const colors = [
-        0x7a3d32,
-        0x315f67,
-        0x6a5b35,
-        0x3d4e43
-      ];
-
-      this.addBox(
+      this.box(
         x,
         0,
         z,
-        18,
+        20,
         3,
-        6,
-        colors[
+        7,
+        containerColors[
           i %
-            colors.length
+            containerColors.length
         ],
         true,
         0.35
@@ -730,101 +837,114 @@ export class WorldMap {
     =========================================
     */
 
-    this.addBox(
-      600,
+    this.box(
+      760,
       0,
-      -570,
-      360,
+      -900,
+      500,
       1,
-      150,
-      0x454b47,
+      180,
+      0x474d49,
+      false
+    );
+
+    this.box(
+      760,
+      0,
+      -1040,
+      700,
+      0.5,
+      240,
+      0x17434c,
       false
     );
 
     for (
       let i = 0;
-      i < 7;
+      i < 9;
       i++
     ) {
-      this.addBox(
-        470 +
-          i * 45,
+
+      this.box(
+        540 +
+          i * 55,
+
         1,
-        -570,
-        30,
-        3,
-        8,
-        0x5d4a36,
+
+        -900,
+
+        34,
+        4,
+        10,
+
+        0x634b34,
         true
       );
-    }
 
-    this.addBox(
-      640,
-      0,
-      -700,
-      420,
-      0.5,
-      260,
-      0x1d4b54,
-      false
-    );
+    }
 
     /*
     =========================================
-    OLD VILLAGE
+    VILLAGE
     =========================================
     */
 
     for (
       let i = 0;
-      i < 18;
+      i < 30;
       i++
     ) {
+
       const x =
-        350 +
+        520 +
         (Math.random() -
           0.5) *
-          260;
+          350;
 
       const z =
-        350 +
+        520 +
         (Math.random() -
           0.5) *
-          230;
+          320;
 
-      this.addBox(
+      this.building(
         x,
-        0,
         z,
-        20,
-        5,
-        16,
-        0x625849,
-        true
+        18 +
+          Math.random() *
+            15,
+        15 +
+          Math.random() *
+            12,
+        5 +
+          Math.random() *
+            5,
+        0x625747
       );
+
     }
 
     /*
     =========================================
-    FOREST BELT
+    FOREST RING
     =========================================
     */
 
     for (
       let i = 0;
-      i < 150;
+      i < 280;
       i++
     ) {
+
       const angle =
         Math.random() *
         Math.PI *
         2;
 
       const radius =
-        540 +
+        850 +
         Math.random() *
-          230;
+          320;
 
       this.tree(
         Math.cos(angle) *
@@ -835,58 +955,53 @@ export class WorldMap {
 
         0.8 +
           Math.random() *
-            0.65
+            0.8
       );
     }
 
     /*
     =========================================
-    ROCKS / COVER
+    ROCK COVER
     =========================================
     */
 
     for (
       let i = 0;
-      i < 110;
+      i < 180;
       i++
     ) {
-      const angle =
-        Math.random() *
-        Math.PI *
-        2;
-
-      const radius =
-        180 +
-        Math.random() *
-          520;
 
       const x =
-        Math.cos(angle) *
-        radius;
+        (Math.random() -
+          0.5) *
+        2100;
 
       const z =
-        Math.sin(angle) *
-        radius;
+        (Math.random() -
+          0.5) *
+        2100;
 
-      this.addBox(
+      this.box(
         x,
         0,
         z,
+
         4 +
           Math.random() *
-            9,
+            10,
 
         1.5 +
           Math.random() *
-            4,
+            5,
 
         4 +
           Math.random() *
-            9,
+            10,
 
-        0x4a514c,
+        0x4b534d,
         true
       );
+
     }
 
     /*
@@ -896,35 +1011,42 @@ export class WorldMap {
     */
 
     this.points = [
+
       {
-        name: "DOWNTOWN",
+        name:
+          "DOWNTOWN",
         x: 0,
         z: 0
       },
 
       {
-        name: "IRON YARD",
-        x: 350,
-        z: -350
+        name:
+          "IRON YARD",
+        x: 520,
+        z: -520
       },
 
       {
-        name: "FORT 09",
-        x: -350,
-        z: 350
+        name:
+          "FORT 09",
+        x: -520,
+        z: 520
       },
 
       {
-        name: "OLD VILLAGE",
-        x: 350,
-        z: 350
+        name:
+          "OLD VILLAGE",
+        x: 520,
+        z: 520
       },
 
       {
-        name: "HARBOR",
-        x: 600,
-        z: -570
+        name:
+          "HARBOR",
+        x: 760,
+        z: -900
       }
+
     ];
 
     return this.root;
@@ -934,53 +1056,56 @@ export class WorldMap {
     position,
     radius
   ) {
+
     for (
-      const collider of
+      const c of
         this.colliders
     ) {
+
       if (
         position.x >
-          collider.minX -
+          c.minX -
             radius &&
         position.x <
-          collider.maxX +
+          c.maxX +
             radius &&
         position.z >
-          collider.minZ -
+          c.minZ -
             radius &&
         position.z <
-          collider.maxZ +
+          c.maxZ +
             radius
       ) {
+
         const left =
           Math.abs(
             position.x -
-              (collider.minX -
+              (c.minX -
                 radius)
           );
 
         const right =
           Math.abs(
             position.x -
-              (collider.maxX +
+              (c.maxX +
                 radius)
           );
 
         const top =
           Math.abs(
             position.z -
-              (collider.minZ -
+              (c.minZ -
                 radius)
           );
 
         const bottom =
           Math.abs(
             position.z -
-              (collider.maxZ +
+              (c.maxZ +
                 radius)
           );
 
-        const minimum =
+        const smallest =
           Math.min(
             left,
             right,
@@ -989,30 +1114,38 @@ export class WorldMap {
           );
 
         if (
-          minimum ===
+          smallest ===
           left
         ) {
+
           position.x =
-            collider.minX -
+            c.minX -
             radius;
+
         } else if (
-          minimum ===
+          smallest ===
           right
         ) {
+
           position.x =
-            collider.maxX +
+            c.maxX +
             radius;
+
         } else if (
-          minimum ===
+          smallest ===
           top
         ) {
+
           position.z =
-            collider.minZ -
+            c.minZ -
             radius;
+
         } else {
+
           position.z =
-            collider.maxZ +
+            c.maxZ +
             radius;
+
         }
       }
     }
@@ -1021,9 +1154,11 @@ export class WorldMap {
   validSpawn(
     position,
     playerPosition,
-    minimumDistance = 100
+    minimumDistance = 120
   ) {
+
     return (
+
       Math.hypot(
         position.x -
           playerPosition.x,
@@ -1035,12 +1170,19 @@ export class WorldMap {
 
       Math.abs(
         position.x
-      ) < 760 &&
+      ) <
+        this.config.world.size /
+          2 -
+
+          30 &&
 
       Math.abs(
         position.z
-      ) < 760
+      ) <
+        this.config.world.size /
+          2 -
+
+          30
     );
   }
 }
-```
