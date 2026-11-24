@@ -66,23 +66,50 @@ export class PlayerController {
     const vest=new T.MeshStandardMaterial({color:0x17212a,roughness:.65,metalness:.2});
     const accent=new T.MeshStandardMaterial({color:0xe39a3b,roughness:.45,metalness:.25});
     const boot=new T.MeshStandardMaterial({color:0x101417,roughness:.9});
-    const torso=new T.Mesh(new T.CapsuleGeometry(.36,.72,6,10),suit); torso.position.y=1.05; g.add(torso);
-    const vestMesh=new T.Mesh(new T.BoxGeometry(.76,.62,.48),vest); vestMesh.position.set(0,1.1,0); g.add(vestMesh);
-    const head=new T.Mesh(new T.SphereGeometry(.27,16,12),skin); head.position.y=1.88; g.add(head);
-    const helmet=new T.Mesh(new T.SphereGeometry(.31,16,10),vest); helmet.scale.y=.58; helmet.position.y=2.08; g.add(helmet);
-    const visor=new T.Mesh(new T.BoxGeometry(.4,.08,.06),accent); visor.position.set(0,2.03,-.28); g.add(visor);
+    const torso=new T.Mesh(new T.CapsuleGeometry(.36,.72,6,10),suit); torso.position.y=1.05; torso.userData.slot="suit"; g.add(torso);
+    const vestMesh=new T.Mesh(new T.BoxGeometry(.76,.62,.48),vest); vestMesh.position.set(0,1.1,0); vestMesh.userData.slot="vest"; g.add(vestMesh);
+    const head=new T.Mesh(new T.SphereGeometry(.27,16,12),skin); head.position.y=1.88; head.userData.slot="skin"; g.add(head);
+    const helmet=new T.Mesh(new T.SphereGeometry(.31,16,10),vest); helmet.scale.y=.58; helmet.position.y=2.08; helmet.userData.slot="helmet"; g.add(helmet);
+    const visor=new T.Mesh(new T.BoxGeometry(.4,.08,.06),accent); visor.position.set(0,2.03,-.28); visor.userData.slot="accent"; g.add(visor);
     for(const x of [-.21,.21]){
-      const arm=new T.Mesh(new T.CapsuleGeometry(.11,.55,5,8),suit); arm.position.set(x,1.03,0); arm.rotation.z=x>0?-0.18:0.18; g.add(arm);
-      const hand=new T.Mesh(new T.SphereGeometry(.12,10,8),skin); hand.position.set(x*.98,.72,-.04); g.add(hand);
-      const leg=new T.Mesh(new T.CapsuleGeometry(.13,.62,5,8),suit); leg.position.set(x*.48,.43,0); g.add(leg);
-      const foot=new T.Mesh(new T.BoxGeometry(.2,.13,.42),boot); foot.position.set(x*.48,.1,-.08); g.add(foot);
+      const arm=new T.Mesh(new T.CapsuleGeometry(.11,.55,5,8),suit); arm.position.set(x,1.03,0); arm.rotation.z=x>0?-0.18:0.18; arm.userData.slot="suit"; g.add(arm);
+      const hand=new T.Mesh(new T.SphereGeometry(.12,10,8),skin); hand.position.set(x*.98,.72,-.04); hand.userData.slot="skin"; g.add(hand);
+      const leg=new T.Mesh(new T.CapsuleGeometry(.13,.62,5,8),suit); leg.position.set(x*.48,.43,0); leg.userData.slot="suit"; g.add(leg);
+      const foot=new T.Mesh(new T.BoxGeometry(.2,.13,.42),boot); foot.position.set(x*.48,.1,-.08); foot.userData.slot="boot"; g.add(foot);
     }
-    const pack=new T.Mesh(new T.BoxGeometry(.48,.72,.22),vest); pack.position.set(0,1.15,.28); g.add(pack);
+    const pack=new T.Mesh(new T.BoxGeometry(.48,.72,.22),vest); pack.position.set(0,1.15,.28); pack.userData.slot="vest"; g.add(pack);
     const beacon=new T.Mesh(new T.TorusGeometry(.55,.025,8,24),new T.MeshBasicMaterial({color:0xff4b3e,transparent:true,opacity:.65,depthWrite:false})); beacon.rotation.x=Math.PI/2; beacon.position.y=.04; g.add(beacon);
-    g.traverse(o=>{o.castShadow=true;o.receiveShadow=true});
+    g.traverse(o=>{o.castShadow=o.userData.slot==="suit"||o.userData.slot==="vest"||o.userData.slot==="helmet";o.receiveShadow=false});
     g.userData.character=true;
     return g;
   }
+
+  applyLoadout(characterIndex=0, outfitIndex=0) {
+    const T=this.T;
+    const chars=[
+      {skin:0xc58a68,helmet:0x17212a,accent:0x35d9ff},
+      {skin:0xd5a07d,helmet:0x263849,accent:0xff9b45},
+      {skin:0x9d674f,helmet:0x202b27,accent:0xff5268},
+      {skin:0xc98d6d,helmet:0x352f26,accent:0x4de1bd}
+    ];
+    const outfits=[
+      {suit:0x263849,vest:0x17212a},
+      {suit:0x173c3c,vest:0x0d2424},
+      {suit:0x493229,vest:0x241814},
+      {suit:0x3b304f,vest:0x21192e}
+    ];
+    const c=chars[Math.abs(characterIndex|0)%chars.length];
+    const o=outfits[Math.abs(outfitIndex|0)%outfits.length];
+    character.traverse(obj=>{
+      if(!obj.material||!obj.userData.slot)return;
+      const slot=obj.userData.slot;
+      const color=slot==="skin"?c.skin:slot==="helmet"?c.helmet:slot==="accent"?c.accent:slot==="boot"?0x101417:slot==="vest"?o.vest:o.suit;
+      obj.material.color.setHex(color);
+      if(slot==="accent") obj.material.emissive?.setHex(color);
+    });
+    this.characterLoadout={characterIndex:characterIndex|0,outfitIndex:outfitIndex|0};
+  }
+
 
   setCameraMode(mode) {
     this.cameraMode = mode === "TPP" ? "TPP" : "FPP";
