@@ -1,12 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
+
+  <meta name="theme-color" content="#050807">
 
   <title>LAST ALIVE</title>
 
@@ -15,8 +17,10 @@
 
 <body>
 
+  <!-- THREE.JS GAME CANVAS -->
   <canvas id="game"></canvas>
 
+  <!-- EFFECTS -->
   <div id="vignette"></div>
   <div id="damageFlash"></div>
   <div id="hitMarker">×</div>
@@ -26,52 +30,190 @@
        MAIN MENU
   ========================== -->
 
-  <div id="menu" class="screen">
+  <div id="menu" class="screen menu-screen">
 
-    <div class="menu-card">
+    <div class="menu-topbar">
 
-      <div class="eyebrow">
-        ORIGINAL BATTLE ROYALE
+      <div class="game-mark">
+        LAST<span>//</span>ALIVE
       </div>
 
-      <h1>
-        LAST<span>//</span>ALIVE
-      </h1>
-
-      <p>
-        Drop into the district. Loot, fight, survive
-        the zone and become the last survivor.
-      </p>
-
-      <input
-        id="playerName"
-        maxlength="14"
-        placeholder="PLAYER NAME"
-        autocomplete="off"
-      >
-
-      <button
-        id="playBtn"
-        class="primary"
-        type="button"
-      >
-        ENTER MATCH
-      </button>
-
-      <div class="mini-help">
-        WASD / ARROWS MOVE ·
-        SHIFT SPRINT ·
-        SPACE JUMP ·
-        C CROUCH ·
-        MOUSE AIM ·
-        LMB FIRE ·
-        R RELOAD ·
-        1/2/3 WEAPONS
+      <div class="build-state">
+        <i></i>
+        ONLINE BUILD
       </div>
 
     </div>
 
+
+    <div class="menu-layout">
+
+      <!-- LEFT -->
+
+      <section class="hero-copy">
+
+        <div class="eyebrow">
+          DISTRICT 09 // BATTLE ROYALE
+        </div>
+
+        <h1>
+          BE THE<br>
+          <span>LAST ALIVE.</span>
+        </h1>
+
+        <p class="hero-text">
+          Drop in. Gear up. Survive the closing zone.
+          Outplay every hostile and become the final survivor.
+        </p>
+
+        <div class="feature-row">
+
+          <div>
+            <b>15</b>
+            <small>SURVIVORS</small>
+          </div>
+
+          <div>
+            <b>03</b>
+            <small>WEAPONS</small>
+          </div>
+
+          <div>
+            <b>∞</b>
+            <small>REPLAY</small>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- RIGHT -->
+
+      <section class="deploy-panel">
+
+        <div class="panel-head">
+
+          <div>
+
+            <small>
+              DEPLOYMENT
+            </small>
+
+            <strong>
+              ENTER DISTRICT 09
+            </strong>
+
+          </div>
+
+          <span class="live-dot">
+            LIVE
+          </span>
+
+        </div>
+
+
+        <label for="playerName">
+          CALLSIGN
+        </label>
+
+        <input
+          id="playerName"
+          maxlength="14"
+          autocomplete="off"
+          placeholder="ENTER CALLSIGN"
+        >
+
+
+        <div class="mode-grid">
+
+          <div class="mode active">
+
+            <span>
+              MODE
+            </span>
+
+            <b>
+              SURVIVAL
+            </b>
+
+            <small>
+              SOLO / BOTS
+            </small>
+
+          </div>
+
+
+          <div class="mode">
+
+            <span>
+              REGION
+            </span>
+
+            <b>
+              INDIA
+            </b>
+
+            <small>
+              LOW LATENCY
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <button
+          id="playBtn"
+          class="deploy-btn"
+          type="button"
+        >
+
+          <span>
+            DEPLOY
+          </span>
+
+          <b>
+            →
+          </b>
+
+        </button>
+
+
+        <div
+          id="bootStatus"
+          class="boot-status"
+        >
+          SYSTEM READY · INITIALIZING ENGINE...
+        </div>
+
+
+        <div class="controls">
+
+          <span>WASD</span> MOVE
+
+          <span>SHIFT</span> SPRINT
+
+          <span>SPACE</span> JUMP
+
+          <span>C</span> CROUCH
+
+          <span>MOUSE</span> AIM
+
+          <span>LMB</span> FIRE
+
+          <span>R</span> RELOAD
+
+          <span>1–3</span> WEAPONS
+
+        </div>
+
+      </section>
+
+    </div>
+
   </div>
+
 
 
   <!-- =========================
@@ -126,8 +268,6 @@
     </div>
 
 
-    <!-- PLAYER STATUS -->
-
     <div class="bottom-left">
 
       <div class="bars">
@@ -160,8 +300,6 @@
     </div>
 
 
-    <!-- WEAPON -->
-
     <div class="bottom-right">
 
       <div class="weapon-info">
@@ -181,15 +319,11 @@
     </div>
 
 
-    <!-- KILL FEED -->
-
     <div
       class="killfeed"
       id="killfeed"
     ></div>
 
-
-    <!-- MINIMAP -->
 
     <div class="minimap-wrap">
 
@@ -202,15 +336,11 @@
     </div>
 
 
-    <!-- TOAST -->
-
     <div
       class="toast"
       id="toast"
     ></div>
 
-
-    <!-- DEBUG -->
 
     <div
       id="debugPanel"
@@ -220,8 +350,9 @@
   </div>
 
 
+
   <!-- =========================
-       RESULT SCREEN
+       RESULT
   ========================== -->
 
   <div
@@ -238,9 +369,11 @@
         MATCH COMPLETE
       </div>
 
+
       <h2 id="resultTitle">
         YOU ARE THE LAST ALIVE
       </h2>
+
 
       <p id="resultText"></p>
 
@@ -279,6 +412,7 @@
         PLAY AGAIN
       </button>
 
+
       <button
         id="lobbyBtn"
         class="secondary"
@@ -292,6 +426,7 @@
   </div>
 
 
+
   <!-- =========================
        MOBILE CONTROLS
   ========================== -->
@@ -302,10 +437,14 @@
   >
 
     <div id="joystick">
+
       <div id="joystickStick"></div>
+
     </div>
 
+
     <div id="touchLook"></div>
+
 
     <button
       id="fireBtn"
@@ -315,6 +454,7 @@
       FIRE
     </button>
 
+
     <button
       id="aimBtn"
       class="touch-btn"
@@ -322,6 +462,7 @@
     >
       AIM
     </button>
+
 
     <button
       id="jumpBtn"
@@ -331,6 +472,7 @@
       JUMP
     </button>
 
+
     <button
       id="crouchBtn"
       class="touch-btn"
@@ -339,6 +481,7 @@
       CROUCH
     </button>
 
+
     <button
       id="sprintBtn"
       class="touch-btn"
@@ -346,6 +489,7 @@
     >
       SPRINT
     </button>
+
 
     <button
       id="reloadBtn"
@@ -358,24 +502,94 @@
   </div>
 
 
-  <!-- THREE.JS -->
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js"></script>
+  <!-- =========================
+       LIBRARIES
+  ========================== -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js"
+  ></script>
+
+  <script
+    src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+  ></script>
 
 
-  <!-- SOCKET.IO -->
-
-  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-
-
-  <!-- IMPORTANT:
-       main.js is in ROOT, NOT /js/
-  -->
-
+  <!-- GAME -->
   <script
     type="module"
     src="./main.js"
+    onerror="window.__LAST_ALIVE_MODULE_ERROR=true"
   ></script>
+
+
+  <!-- STARTUP CHECK -->
+  <script>
+
+    window.__LAST_ALIVE_READY = false;
+
+    window.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+        const button =
+          document.getElementById("playBtn");
+
+        const status =
+          document.getElementById("bootStatus");
+
+
+        setTimeout(
+          function () {
+
+            if (
+              !window.__LAST_ALIVE_READY
+            ) {
+
+              status.textContent =
+                "ENGINE FAILED TO START · CHECK main.js";
+
+              status.classList.add(
+                "error"
+              );
+
+            }
+
+          },
+          2500
+        );
+
+
+        button.addEventListener(
+          "click",
+          function () {
+
+            if (
+              !window.__LAST_ALIVE_READY
+            ) {
+
+              status.textContent =
+                "ENGINE NOT READY · main.js DID NOT LOAD";
+
+              status.classList.add(
+                "error"
+              );
+
+              console.error(
+                "LAST ALIVE: main.js is not ready"
+              );
+
+            }
+
+          },
+          true
+        );
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
