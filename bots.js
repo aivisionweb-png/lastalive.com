@@ -149,9 +149,9 @@ export class BotManager {
 
     // High-visibility tactical enemy outline / beacon.
     const glowMat = new T.MeshBasicMaterial({
-      color: 0xff304f,
+      color: 0xff234f,
       transparent: true,
-      opacity: 0.82,
+      opacity: 0.9,
       depthWrite: false,
       blending: T.AdditiveBlending
     });
