@@ -140,3 +140,7 @@ export const WEAPONS = [
   }
 
 ];
+network: {
+  enabled: true,
+  url: "https://lastalive-com.onrender.com"
+}
