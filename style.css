@@ -817,3 +817,6 @@ html,body,#game,#touchLook,#mobileControls{touch-action:none!important}
 .deploy-btn:hover{filter:brightness(1.05)!important}
 .feature-row b{color:#b9d9dc!important}
 .mode.active{border-color:rgba(126,202,207,.26)!important;background:rgba(126,202,207,.045)!important}
+
+/* FINAL UTILITY CONTROLS */
+@media(max-width:700px){#mobileControls #airdropBtn{right:250px!important;top:92px!important;width:58px!important;height:48px!important;font-size:8px!important}}
