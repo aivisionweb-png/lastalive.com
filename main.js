@@ -38,6 +38,14 @@ let running = false;
 let starting = false;
 
 const ui = new UI();
+try {
+  ui.bind();
+} catch (error) {
+  console.error(
+    "LAST ALIVE UI BIND ERROR:",
+    error
+  );
+}
 
 const $ = id =>
   document.getElementById(id);
