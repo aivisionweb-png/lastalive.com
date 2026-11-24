@@ -576,11 +576,13 @@ function startMatch() {
     );
 
     ui.compass?.(player.yaw);
+    ui.scope?.(input.isAim(), weapons.current);
 
     ui.weapon(
       weapons.current,
       false
     );
+    ui.setWeaponIndex?.(weapons.index);
 
     status(
       "MATCH LIVE · SURVIVE"
@@ -809,6 +811,7 @@ function loop() {
       camera,
       dt
     );
+    ui.scope?.(input.isAim(), weapons.current);
 
     /*
     FIRE
