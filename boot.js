@@ -61,6 +61,11 @@
       error
     );
 
+    const loadingText=document.getElementById("loadingText");
+    if(loadingText) loadingText.textContent=message;
+    const progress=document.getElementById("loadingProgress");
+    if(progress){let p=12;if(message.includes("3D ENGINE"))p=35;else if(message.includes("GAME SYSTEMS"))p=72;else if(message.includes("READY"))p=100;progress.style.width=p+"%";}
+
   }
 
 
@@ -576,6 +581,7 @@
         setStatus(
           "SYSTEM READY · ENGINE ONLINE"
         );
+        document.getElementById("loadingScreen")?.classList.add("done");
 
 
         console.log(
