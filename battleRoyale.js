@@ -198,6 +198,7 @@ export class BattleRoyaleSystem {
     } else this.vehicle.visible=false;
   }
   update(dt,bots){
+    const T=this.T;
     this.player.__bots=bots?.bots||[];
     if(!this.started)return;
     const counts=document.getElementById("brCounts");
