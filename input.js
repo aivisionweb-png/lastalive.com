@@ -19,7 +19,9 @@ export class InputController {
     };
 
     this.mobile =
-      matchMedia("(max-width:700px)").matches;
+      matchMedia("(max-width:700px)").matches ||
+      navigator.maxTouchPoints > 0 ||
+      "ontouchstart" in window;
   }
 
   bind() {
@@ -100,6 +102,7 @@ export class InputController {
       look.addEventListener(
         "pointerdown",
         e => {
+          e.preventDefault();
           last = {
             x: e.clientX,
             y: e.clientY
@@ -131,14 +134,16 @@ export class InputController {
 
       look.addEventListener(
         "pointerup",
-        () => {
+        e => { e.preventDefault();
+
           last = null;
         }
       );
 
       look.addEventListener(
         "pointercancel",
-        () => {
+        e => { e.preventDefault();
+
           last = null;
         }
       );
