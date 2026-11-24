@@ -862,6 +862,7 @@ function loop() {
     );
 
     ui.compass?.(player.yaw);
+    ui.scope?.(input.isAim(), weapons.current);
 
     ui.alive(
       bots.alive() + 1
