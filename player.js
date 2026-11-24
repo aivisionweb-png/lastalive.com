@@ -56,6 +56,7 @@ export class PlayerController {
 
     this.buildWeaponHands();
     this.character.visible = true;
+    this.character.userData.landingPose = 0;
     this.map.root.add(this.character);
   }
 
