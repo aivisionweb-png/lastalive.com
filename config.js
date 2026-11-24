@@ -1,5 +1,4 @@
 export const CONFIG = {
-
   world: {
     size: 900,
     groundY: 0,
@@ -22,11 +21,9 @@ export const CONFIG = {
   },
 
   zone: {
-
     startRadius: 330,
 
     phases: [
-
       {
         wait: 18,
         target: 260,
@@ -54,40 +51,28 @@ export const CONFIG = {
         duration: 16,
         damage: 7
       }
-
     ]
-
   },
 
   bots: {
-
     detect: 150,
     shootRange: 75,
     shootCooldown: 1.0,
     speed: 2.2
-
   },
 
   debug: {
-
     enabled: false
-
   },
 
   network: {
-
-    enabled: false,
-
-    url:
-      "https://lastalive-game.onrender.com"
-
+    enabled: true,
+    url: "https://lastalive-com.onrender.com"
   }
-
 };
 
 
 export const WEAPONS = [
-
   {
     id: "ar",
     name: "AR-01",
@@ -131,16 +116,10 @@ export const WEAPONS = [
     reserve: 36,
 
     spread: 0.095,
-
     pellets: 8,
 
     range: 85,
 
     reload: 1.15
   }
-
 ];
-network: {
-  enabled: true,
-  url: "https://lastalive-com.onrender.com"
-}
