@@ -376,7 +376,6 @@ function initGame() {
   loot.spawn(140);
 
   battleRoyale = new BattleRoyaleSystem(T, scene, player, map, ui, input, CONFIG);
-  multiplayerAvatars = new MultiplayerAvatars(T, scene, network, player);
 
   /*
   =========================================
@@ -405,6 +404,8 @@ function initGame() {
       CONFIG,
       ui
     );
+
+  multiplayerAvatars = new MultiplayerAvatars(T, scene, network, player);
 
   /*
   =========================================
