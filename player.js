@@ -51,6 +51,9 @@ export class PlayerController {
     this.gun =
       new T.Group();
 
+    this.worldGun = new T.Group();
+    this.character.add(this.worldGun);
+
     this.currentWeapon =
       null;
 
@@ -258,6 +261,27 @@ export class PlayerController {
       );
 
     }
+
+    while (this.worldGun.children.length) {
+      this.worldGun.remove(this.worldGun.children[0]);
+    }
+
+    // Visible third-person weapon: compact but detailed enough to read clearly on mobile.
+    const worldMat = new T.MeshStandardMaterial({color:0x151a1c,metalness:.82,roughness:.24});
+    const worldAccent = new T.MeshStandardMaterial({color:0x35d9ff,metalness:.35,roughness:.28,emissive:0x0b5660,emissiveIntensity:.5});
+    const wg = new T.Group();
+    const wb = new T.Mesh(new T.BoxGeometry(.18,.18,1.15),worldMat);
+    wb.position.z=-.62; wg.add(wb);
+    const wgBarrel = new T.Mesh(new T.CylinderGeometry(.035,.045,.5,10),worldMat);
+    wgBarrel.rotation.x=Math.PI/2; wgBarrel.position.z=-1.38; wg.add(wgBarrel);
+    const wgMag = new T.Mesh(new T.BoxGeometry(.12,.32,.16),worldMat);
+    wgMag.position.set(0,-.23,-.55); wg.add(wgMag);
+    const wgSight = new T.Mesh(new T.BoxGeometry(.1,.08,.22),worldAccent);
+    wgSight.position.set(0,.13,-.68); wg.add(wgSight);
+    wg.rotation.x=-.08;
+    wg.rotation.y=Math.PI;
+    wg.position.set(.28,1.12,-.38);
+    this.worldGun.add(wg);
 
     /*
     =========================================
