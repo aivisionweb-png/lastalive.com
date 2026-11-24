@@ -27,6 +27,10 @@ export class InputController {
       e => {
         this.keys.add(e.code);
 
+        if (e.code === "KeyQ") {
+          this.aim = !this.aim;
+        }
+
         if (e.code === "Space") {
           this.jump = true;
         }
