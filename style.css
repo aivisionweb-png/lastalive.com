@@ -638,3 +638,21 @@ body{background:var(--la-bg)}
   .br-counts{right:10px;bottom:168px;font-size:7px}
   .weapon-bar{bottom:20px!important}
 }
+
+/* ===== KILL STREAK ===== */
+.kill-streak{
+ position:fixed;left:50%;top:17%;transform:translateX(-50%) translateY(-8px);
+ z-index:80;opacity:0;pointer-events:none;text-align:center;
+ padding:8px 18px 10px;min-width:90px;
+ border:1px solid rgba(53,217,255,.3);
+ background:linear-gradient(180deg,rgba(3,12,22,.92),rgba(3,7,14,.76));
+ clip-path:polygon(8px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);
+ transition:opacity .2s,transform .2s;
+ box-shadow:0 0 28px rgba(53,217,255,.12);
+}
+.kill-streak[style*="opacity: 1"]{transform:translateX(-50%) translateY(0)}
+.kill-streak span{display:block;font:800 7px monospace;letter-spacing:3px;color:#6e8998}
+.kill-streak b{display:block;margin-top:2px;font:900 24px/1 Arial;color:#35d9ff;text-shadow:0 0 18px rgba(53,217,255,.5)}
+.kill-streak.hot{border-color:rgba(255,155,69,.5);box-shadow:0 0 35px rgba(255,155,69,.16)}
+.kill-streak.hot b{color:#ff9b45;text-shadow:0 0 18px rgba(255,155,69,.55)}
+@media(max-width:700px){.kill-streak{top:12%;font-size:8px}.kill-streak b{font-size:20px}}
