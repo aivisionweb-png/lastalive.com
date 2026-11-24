@@ -63,6 +63,7 @@ export class WeaponSystem {
       this.current,
       false
     );
+    this.ui.setWeaponIndex?.(this.index);
   }
 
   addAmmo(amount = 30) {
