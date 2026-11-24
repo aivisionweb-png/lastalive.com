@@ -676,6 +676,36 @@ function bindUI() {
     }
   );
 
+  // Operator customization in the starting lobby.
+  window.__LA_CHARACTER=0;
+  window.__LA_OUTFIT=0;
+  const loadoutName=$("loadoutName");
+  const statusEl=$("loadoutStatus");
+  const updateLoadout=()=>{
+    player?.applyLoadout?.(window.__LA_CHARACTER,window.__LA_OUTFIT);
+    const names=["NOVA","RAVEN","KAI","VEX"];
+    const clothes=["TACTICAL","URBAN","DESERT","NIGHT"];
+    if(loadoutName) loadoutName.textContent=names[window.__LA_CHARACTER]+" // "+clothes[window.__LA_OUTFIT];
+    if(statusEl) statusEl.textContent="READY TO DEPLOY";
+  };
+  document.querySelectorAll("[data-character]").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      e.preventDefault();
+      window.__LA_CHARACTER=Number(btn.dataset.character)||0;
+      document.querySelectorAll("[data-character]").forEach(x=>x.classList.toggle("active",x===btn));
+      if(!initialized) initGame();
+      updateLoadout();
+    });
+  });
+  document.querySelectorAll("[data-outfit]").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      e.preventDefault();
+      window.__LA_OUTFIT=Number(btn.dataset.outfit)||0;
+      document.querySelectorAll("[data-outfit]").forEach(x=>x.classList.toggle("active",x===btn));
+      if(!initialized) initGame();
+      updateLoadout();
+    });
+  });
   const name =
     $("playerName");
 
@@ -981,7 +1011,9 @@ function loop() {
 
 try {
 
-  bindUI();
+  window.__LA_CHARACTER=window.__LA_CHARACTER||0;
+window.__LA_OUTFIT=window.__LA_OUTFIT||0;
+bindUI();
 
   window.__LAST_ALIVE_READY =
     true;
