@@ -1,19 +1,19 @@
-import { CONFIG, WEAPONS } from "./config.js";
-import { InputController } from "./input.js";
-import { WorldMap } from "./map.js";
-import { PlayerController } from "./player.js";
-import { WeaponSystem } from "./weapons.js";
-import { BotManager } from "./bots.js";
-import { LootSystem } from "./loot.js";
-import { SafeZone } from "./zone.js";
-import { AudioSystem } from "./audio.js";
-import { UI } from "./ui.js";
-import { Minimap } from "./minimap.js";
-import { NetworkClient } from "./network.js";
-import { MatchState } from "./match.js";
-import { DebugTools } from "./debug.js";
-import { BattleRoyaleSystem } from "./battleRoyale.js";
-import { MultiplayerAvatars } from "./multiplayer.js";
+import { CONFIG, WEAPONS } from "./config.js?v=20261124-4";
+import { InputController } from "./input.js?v=20261124-4";
+import { WorldMap } from "./map.js?v=20261124-4";
+import { PlayerController } from "./player.js?v=20261124-4";
+import { WeaponSystem } from "./weapons.js?v=20261124-4";
+import { BotManager } from "./bots.js?v=20261124-4";
+import { LootSystem } from "./loot.js?v=20261124-4";
+import { SafeZone } from "./zone.js?v=20261124-4";
+import { AudioSystem } from "./audio.js?v=20261124-4";
+import { UI } from "./ui.js?v=20261124-4";
+import { Minimap } from "./minimap.js?v=20261124-4";
+import { NetworkClient } from "./network.js?v=20261124-4";
+import { MatchState } from "./match.js?v=20261124-4";
+import { DebugTools } from "./debug.js?v=20261124-4";
+import { BattleRoyaleSystem } from "./battleRoyale.js?v=20261124-4";
+import { MultiplayerAvatars } from "./multiplayer.js?v=20261124-4";
 
 const T = window.THREE;
 
