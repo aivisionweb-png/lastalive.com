@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
@@ -8,29 +9,56 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-  <meta name="theme-color" content="#050807">
+  <meta
+    name="theme-color"
+    content="#050807"
+  >
+
+  <meta
+    name="description"
+    content="LAST ALIVE — District 09 Battle Royale"
+  >
 
   <title>LAST ALIVE</title>
 
-  <link rel="stylesheet" href="./style.css">
+  <link
+    rel="stylesheet"
+    href="./style.css"
+  >
 </head>
 
 <body>
 
-  <!-- THREE.JS GAME CANVAS -->
+  <!-- =================================================
+       GAME CANVAS
+  ================================================== -->
+
   <canvas id="game"></canvas>
 
-  <!-- EFFECTS -->
+
+  <!-- =================================================
+       SCREEN EFFECTS
+  ================================================== -->
+
   <div id="vignette"></div>
+
   <div id="damageFlash"></div>
-  <div id="hitMarker">×</div>
+
+  <div id="hitMarker">
+    ×
+  </div>
 
 
-  <!-- =========================
+  <!-- =================================================
        MAIN MENU
-  ========================== -->
+  ================================================== -->
 
-  <div id="menu" class="screen menu-screen">
+  <div
+    id="menu"
+    class="screen menu-screen"
+  >
+
+    <!-- TOP BAR -->
 
     <div class="menu-topbar">
 
@@ -46,9 +74,14 @@
     </div>
 
 
+    <!-- MAIN MENU CONTENT -->
+
     <div class="menu-layout">
 
-      <!-- LEFT -->
+
+      <!-- =============================================
+           HERO
+      ============================================== -->
 
       <section class="hero-copy">
 
@@ -56,15 +89,18 @@
           DISTRICT 09 // BATTLE ROYALE
         </div>
 
+
         <h1>
           BE THE<br>
           <span>LAST ALIVE.</span>
         </h1>
 
+
         <p class="hero-text">
           Drop in. Gear up. Survive the closing zone.
           Outplay every hostile and become the final survivor.
         </p>
+
 
         <div class="feature-row">
 
@@ -88,7 +124,9 @@
       </section>
 
 
-      <!-- RIGHT -->
+      <!-- =============================================
+           DEPLOY PANEL
+      ============================================== -->
 
       <section class="deploy-panel">
 
@@ -113,17 +151,23 @@
         </div>
 
 
+        <!-- CALLSIGN -->
+
         <label for="playerName">
           CALLSIGN
         </label>
 
         <input
           id="playerName"
+          type="text"
           maxlength="14"
           autocomplete="off"
+          spellcheck="false"
           placeholder="ENTER CALLSIGN"
         >
 
+
+        <!-- MODE -->
 
         <div class="mode-grid">
 
@@ -163,6 +207,8 @@
         </div>
 
 
+        <!-- DEPLOY BUTTON -->
+
         <button
           id="playBtn"
           class="deploy-btn"
@@ -180,31 +226,43 @@
         </button>
 
 
+        <!-- BOOT STATUS -->
+
         <div
           id="bootStatus"
           class="boot-status"
         >
-          SYSTEM READY · INITIALIZING ENGINE...
+          SYSTEM BOOTING · LOADING ENGINE...
         </div>
 
 
+        <!-- CONTROLS -->
+
         <div class="controls">
 
-          <span>WASD</span> MOVE
+          <span>WASD</span>
+          MOVE
 
-          <span>SHIFT</span> SPRINT
+          <span>SHIFT</span>
+          SPRINT
 
-          <span>SPACE</span> JUMP
+          <span>SPACE</span>
+          JUMP
 
-          <span>C</span> CROUCH
+          <span>C</span>
+          CROUCH
 
-          <span>MOUSE</span> AIM
+          <span>MOUSE</span>
+          AIM
 
-          <span>LMB</span> FIRE
+          <span>LMB</span>
+          FIRE
 
-          <span>R</span> RELOAD
+          <span>R</span>
+          RELOAD
 
-          <span>1–3</span> WEAPONS
+          <span>1–3</span>
+          WEAPONS
 
         </div>
 
@@ -215,12 +273,17 @@
   </div>
 
 
-
-  <!-- =========================
+  <!-- =================================================
        HUD
-  ========================== -->
+  ================================================== -->
 
-  <div id="hud" class="hidden">
+  <div
+    id="hud"
+    class="hidden"
+  >
+
+
+    <!-- TOP LEFT -->
 
     <div class="top-left">
 
@@ -230,16 +293,22 @@
 
       <div class="match-stat">
         ALIVE
-        <b id="alive">15</b>
+        <b id="alive">
+          15
+        </b>
       </div>
 
     </div>
 
 
+    <!-- COMPASS -->
+
     <div id="compass">
       N
     </div>
 
+
+    <!-- SAFE ZONE -->
 
     <div class="zone-card">
 
@@ -258,6 +327,8 @@
     </div>
 
 
+    <!-- CROSSHAIR -->
+
     <div class="crosshair">
 
       <i></i>
@@ -268,13 +339,18 @@
     </div>
 
 
+    <!-- HEALTH -->
+
     <div class="bottom-left">
 
       <div class="bars">
 
         <div>
           <span>HP</span>
-          <b id="hpText">100</b>
+
+          <b id="hpText">
+            100
+          </b>
         </div>
 
         <div class="bar">
@@ -284,11 +360,20 @@
       </div>
 
 
+      <!-- ARMOR -->
+
       <div class="bars armor">
 
         <div>
-          <span>ARMOR</span>
-          <b id="armorText">75</b>
+
+          <span>
+            ARMOR
+          </span>
+
+          <b id="armorText">
+            75
+          </b>
+
         </div>
 
         <div class="bar">
@@ -299,6 +384,8 @@
 
     </div>
 
+
+    <!-- WEAPON -->
 
     <div class="bottom-right">
 
@@ -319,11 +406,15 @@
     </div>
 
 
+    <!-- KILL FEED -->
+
     <div
       class="killfeed"
       id="killfeed"
     ></div>
 
+
+    <!-- MINIMAP -->
 
     <div class="minimap-wrap">
 
@@ -336,11 +427,15 @@
     </div>
 
 
+    <!-- TOAST -->
+
     <div
       class="toast"
       id="toast"
     ></div>
 
+
+    <!-- DEBUG -->
 
     <div
       id="debugPanel"
@@ -350,10 +445,9 @@
   </div>
 
 
-
-  <!-- =========================
-       RESULT
-  ========================== -->
+  <!-- =================================================
+       RESULT SCREEN
+  ================================================== -->
 
   <div
     id="result"
@@ -382,20 +476,25 @@
 
         <div>
           KILLS
+
           <b id="resultKills">
             0
           </b>
         </div>
 
+
         <div>
           PLACEMENT
+
           <b id="resultPlace">
             #1
           </b>
         </div>
 
+
         <div>
           TIME
+
           <b id="resultTime">
             00:00
           </b>
@@ -403,6 +502,8 @@
 
       </div>
 
+
+      <!-- PLAY AGAIN -->
 
       <button
         id="againBtn"
@@ -412,6 +513,8 @@
         PLAY AGAIN
       </button>
 
+
+      <!-- LOBBY -->
 
       <button
         id="lobbyBtn"
@@ -426,15 +529,16 @@
   </div>
 
 
-
-  <!-- =========================
+  <!-- =================================================
        MOBILE CONTROLS
-  ========================== -->
+  ================================================== -->
 
   <div
     id="mobileControls"
     class="hidden"
   >
+
+    <!-- JOYSTICK -->
 
     <div id="joystick">
 
@@ -443,8 +547,12 @@
     </div>
 
 
+    <!-- TOUCH LOOK -->
+
     <div id="touchLook"></div>
 
+
+    <!-- FIRE -->
 
     <button
       id="fireBtn"
@@ -455,6 +563,8 @@
     </button>
 
 
+    <!-- AIM -->
+
     <button
       id="aimBtn"
       class="touch-btn"
@@ -463,6 +573,8 @@
       AIM
     </button>
 
+
+    <!-- JUMP -->
 
     <button
       id="jumpBtn"
@@ -473,6 +585,8 @@
     </button>
 
 
+    <!-- CROUCH -->
+
     <button
       id="crouchBtn"
       class="touch-btn"
@@ -482,6 +596,8 @@
     </button>
 
 
+    <!-- SPRINT -->
+
     <button
       id="sprintBtn"
       class="touch-btn"
@@ -490,6 +606,8 @@
       SPRINT
     </button>
 
+
+    <!-- RELOAD -->
 
     <button
       id="reloadBtn"
@@ -502,94 +620,37 @@
   </div>
 
 
+  <!-- =================================================
+       EXTERNAL LIBRARIES
+  ================================================== -->
 
-  <!-- =========================
-       LIBRARIES
-  ========================== -->
+  <!-- THREE.JS -->
 
   <script
     src="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js"
   ></script>
+
+
+  <!-- SOCKET.IO -->
 
   <script
     src="https://cdn.socket.io/4.8.1/socket.io.min.js"
   ></script>
 
 
-  <!-- GAME -->
+  <!-- =================================================
+       LAST ALIVE BOOT
+       
+       IMPORTANT:
+       boot.js loads main.js.
+       Do NOT load main.js separately here.
+  ================================================== -->
+
   <script
     type="module"
-    src="./main.js"
-    onerror="window.__LAST_ALIVE_MODULE_ERROR=true"
+    src="./boot.js"
   ></script>
 
-
-  <!-- STARTUP CHECK -->
-  <script>
-
-    window.__LAST_ALIVE_READY = false;
-
-    window.addEventListener(
-      "DOMContentLoaded",
-      function () {
-
-        const button =
-          document.getElementById("playBtn");
-
-        const status =
-          document.getElementById("bootStatus");
-
-
-        setTimeout(
-          function () {
-
-            if (
-              !window.__LAST_ALIVE_READY
-            ) {
-
-              status.textContent =
-                "ENGINE FAILED TO START · CHECK main.js";
-
-              status.classList.add(
-                "error"
-              );
-
-            }
-
-          },
-          2500
-        );
-
-
-        button.addEventListener(
-          "click",
-          function () {
-
-            if (
-              !window.__LAST_ALIVE_READY
-            ) {
-
-              status.textContent =
-                "ENGINE NOT READY · main.js DID NOT LOAD";
-
-              status.classList.add(
-                "error"
-              );
-
-              console.error(
-                "LAST ALIVE: main.js is not ready"
-              );
-
-            }
-
-          },
-          true
-        );
-
-      }
-    );
-
-  </script>
-
 </body>
+
 </html>
