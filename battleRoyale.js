@@ -5,7 +5,14 @@ export class BattleRoyaleSystem {
     this.medkits=2; this.gloo=3; this.grenades=2; this.airdrops=[]; this.airdropTimer=22;
     this.vehicle=null; this.inVehicle=false; this.vehicleSpeed=0; this.vehicleCooldown=0;
     this.keys={use:false,gloo:false,grenade:false,vehicle:false,medkit:false};
-    this.bindKeys(); this.buildVehicle();
+    this.bindKeys(); this.bindMobile(); this.buildVehicle();
+  }
+
+  bindMobile(){
+    const map={gloo:"gloo",grenade:"grenade",medkit:"medkit",vehicle:"vehicle"};
+    for(const [id,key] of Object.entries(map)){
+      document.getElementById(id+"Btn")?.addEventListener("pointerdown",e=>{e.preventDefault();this.keys[key]=true;});
+    }
   }
 
   bindKeys(){
@@ -39,6 +46,8 @@ export class BattleRoyaleSystem {
       (Math.random()-.5)*(this.c.world.size*.42)
     );
     this.player.grounded=false; this.player.vy=-3;
+    const f=new this.T.Vector3(-Math.sin(this.player.yaw),0,-Math.cos(this.player.yaw));
+    this.vehicle.position.copy(this.player.object.position).addScaledVector(f,8);
     this.ui.toast("DROP PHASE · MOVE TO CHOOSE LANDING");
   }
 
@@ -119,6 +128,8 @@ export class BattleRoyaleSystem {
   update(dt, bots){
     this.player.__bots=bots?.bots||[];
     if(!this.started)return;
+    const counts=document.getElementById("brCounts");
+    if(counts) counts.textContent=`MED \${this.medkits}  ·  GLOO \${this.gloo}  ·  FRAG \${this.grenades}  ·  V \${this.inVehicle?"DRIVE":"ENTER"}`;
     if(this.dropActive){
       this.dropTime+=dt;
       const axis=this.input.axis();
