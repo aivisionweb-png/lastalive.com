@@ -87,6 +87,8 @@ export class PlayerController {
 
   applyLoadout(characterIndex=0, outfitIndex=0) {
     const T=this.T;
+    const character=this.character;
+    if(!character) return;
     const chars=[
       {skin:0xc58a68,helmet:0x17212a,accent:0x35d9ff},
       {skin:0xd5a07d,helmet:0x263849,accent:0xff9b45},
