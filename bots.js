@@ -180,6 +180,17 @@ export class BotManager {
 
     group.userData.enemyGlow = { ring, beacon, beaconTop };
 
+    // Billboard enemy identifier: always faces the camera and stays readable.
+    const labelCanvas=document.createElement("canvas");
+    labelCanvas.width=256; labelCanvas.height=64;
+    const lctx=labelCanvas.getContext("2d");
+    lctx.fillStyle="rgba(120,8,20,.86)"; lctx.fillRect(4,8,248,48);
+    lctx.strokeStyle="#ff5268"; lctx.lineWidth=3; lctx.strokeRect(4,8,248,48);
+    lctx.font="900 26px Arial"; lctx.textAlign="center"; lctx.textBaseline="middle"; lctx.fillStyle="#fff";
+    lctx.fillText("ENEMY",128,32);
+    const label=new T.Sprite(new T.SpriteMaterial({map:new T.CanvasTexture(labelCanvas),transparent:true,depthTest:false,depthWrite:false}));
+    label.scale.set(1.65,.42,1); label.position.y=3.9; label.renderOrder=20; group.add(label);
+
     const data = {
       alive: true,
 
