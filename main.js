@@ -16,7 +16,7 @@ import { DebugTools } from "./debug.js";
 /*
 =========================================================
  LAST ALIVE
- Main Game Controller
+ MAIN GAME CONTROLLER
 =========================================================
 */
 
@@ -48,68 +48,164 @@ const ui = new UI();
 
 /*
 =========================================================
- BASIC DOM HELPERS
+ DOM
 =========================================================
 */
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
-function showError(message) {
-  console.error("LAST ALIVE ERROR:", message);
+/*
+=========================================================
+ STARTUP STATE
+=========================================================
+*/
 
-  const toast = $("toast");
+window.__LAST_ALIVE_READY = false;
+window.__LAST_ALIVE_GAME_INITIALIZED = false;
+window.__LAST_ALIVE_MATCH_RUNNING = false;
 
-  if (toast) {
-    toast.textContent = "ERROR: " + message;
-    toast.style.opacity = "1";
+/*
+=========================================================
+ STATUS
+=========================================================
+*/
 
-    setTimeout(() => {
-      toast.style.opacity = "0";
-    }, 5000);
+function setBootStatus(
+  message,
+  error = false
+) {
+
+  const status =
+    $("bootStatus");
+
+  if (!status) {
+    return;
   }
 
-  const menu = $("menu");
+  status.textContent =
+    message;
 
-  if (menu) {
-    menu.classList.remove("hidden");
-  }
-
-  const hud = $("hud");
-
-  if (hud) {
-    hud.classList.add("hidden");
-  }
-
-  const mobile = $("mobileControls");
-
-  if (mobile) {
-    mobile.classList.add("hidden");
+  if (error) {
+    status.classList.add(
+      "error"
+    );
+  } else {
+    status.classList.remove(
+      "error"
+    );
   }
 }
 
 /*
 =========================================================
- INITIAL THREE CHECK
+ ERROR DISPLAY
+=========================================================
+*/
+
+function showError(message) {
+
+  console.error(
+    "LAST ALIVE ERROR:",
+    message
+  );
+
+  setBootStatus(
+    "ENGINE ERROR · " +
+      message,
+    true
+  );
+
+  const toast =
+    $("toast");
+
+  if (toast) {
+
+    toast.textContent =
+      "ERROR: " +
+      message;
+
+    toast.style.opacity =
+      "1";
+
+    setTimeout(() => {
+
+      toast.style.opacity =
+        "0";
+
+    }, 5000);
+
+  }
+
+  const menu =
+    $("menu");
+
+  if (menu) {
+    menu.classList.remove(
+      "hidden"
+    );
+  }
+
+  const hud =
+    $("hud");
+
+  if (hud) {
+    hud.classList.add(
+      "hidden"
+    );
+  }
+
+  const mobile =
+    $("mobileControls");
+
+  if (mobile) {
+    mobile.classList.add(
+      "hidden"
+    );
+  }
+}
+
+/*
+=========================================================
+ THREE CHECK
 =========================================================
 */
 
 if (!T) {
+
   console.error(
-    "Three.js failed to load. Check the CDN in index.html."
+    "Three.js failed to load."
   );
+
+  setBootStatus(
+    "THREE.JS FAILED TO LOAD",
+    true
+  );
+
 }
 
 /*
 =========================================================
- INITIAL UI BIND
+ UI BIND
 =========================================================
 */
 
-ui.bind();
+try {
+
+  ui.bind();
+
+} catch (error) {
+
+  console.error(
+    "LAST ALIVE UI BIND ERROR:",
+    error
+  );
+
+}
 
 /*
 =========================================================
- GAME INITIALIZATION
+ INITIALIZE GAME
 =========================================================
 */
 
@@ -120,9 +216,11 @@ function initGame() {
   }
 
   if (!T) {
+
     throw new Error(
-      "Three.js failed to load. Check index.html."
+      "Three.js failed to load"
     );
+
   }
 
   /*
@@ -131,10 +229,13 @@ function initGame() {
   -------------------------------------------------------
   */
 
-  scene = new T.Scene();
+  scene =
+    new T.Scene();
 
   scene.background =
-    new T.Color(0x708982);
+    new T.Color(
+      0x708982
+    );
 
   scene.fog =
     new T.FogExp2(
@@ -163,19 +264,23 @@ function initGame() {
   -------------------------------------------------------
   */
 
-  const canvas = $("game");
+  const canvas =
+    $("game");
 
   if (!canvas) {
+
     throw new Error(
-      "Game canvas #game missing."
+      "Game canvas #game missing"
     );
+
   }
 
   renderer =
     new T.WebGLRenderer({
       canvas,
       antialias: true,
-      powerPreference: "high-performance"
+      powerPreference:
+        "high-performance"
     });
 
   renderer.setSize(
@@ -185,7 +290,8 @@ function initGame() {
 
   renderer.setPixelRatio(
     Math.min(
-      window.devicePixelRatio || 1,
+      window.devicePixelRatio ||
+        1,
       1.5
     )
   );
@@ -199,12 +305,14 @@ function initGame() {
   renderer.toneMappingExposure =
     1.1;
 
-  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.enabled =
+    true;
 
   renderer.shadowMap.type =
     T.PCFSoftShadowMap;
 
-  clock = new T.Clock();
+  clock =
+    new T.Clock();
 
   /*
   -------------------------------------------------------
@@ -219,7 +327,9 @@ function initGame() {
       2.1
     );
 
-  scene.add(hemi);
+  scene.add(
+    hemi
+  );
 
   const sun =
     new T.DirectionalLight(
@@ -233,19 +343,29 @@ function initGame() {
     100
   );
 
-  sun.castShadow = true;
+  sun.castShadow =
+    true;
 
   sun.shadow.mapSize.set(
     1024,
     1024
   );
 
-  sun.shadow.camera.left = -500;
-  sun.shadow.camera.right = 500;
-  sun.shadow.camera.top = 500;
-  sun.shadow.camera.bottom = -500;
+  sun.shadow.camera.left =
+    -500;
 
-  scene.add(sun);
+  sun.shadow.camera.right =
+    500;
+
+  sun.shadow.camera.top =
+    500;
+
+  sun.shadow.camera.bottom =
+    -500;
+
+  scene.add(
+    sun
+  );
 
   /*
   -------------------------------------------------------
@@ -274,12 +394,16 @@ function initGame() {
     map.build();
 
   if (!mapRoot) {
+
     throw new Error(
-      "Map failed to build."
+      "Map failed to build"
     );
+
   }
 
-  scene.add(mapRoot);
+  scene.add(
+    mapRoot
+  );
 
   /*
   -------------------------------------------------------
@@ -296,9 +420,11 @@ function initGame() {
     );
 
   if (!player.object) {
+
     throw new Error(
-      "Player failed to initialize."
+      "Player failed to initialize"
     );
+
   }
 
   scene.add(
@@ -311,7 +437,8 @@ function initGame() {
   -------------------------------------------------------
   */
 
-  ui.scene = scene;
+  ui.scene =
+    scene;
 
   /*
   -------------------------------------------------------
@@ -353,11 +480,18 @@ function initGame() {
       ui
     );
 
-  bots.onAllDead = () => {
-    if (running) {
-      finishMatch(true);
-    }
-  };
+  bots.onAllDead =
+    () => {
+
+      if (running) {
+
+        finishMatch(
+          true
+        );
+
+      }
+
+    };
 
   /*
   -------------------------------------------------------
@@ -374,7 +508,9 @@ function initGame() {
       weapons
     );
 
-  loot.spawn(30);
+  loot.spawn(
+    30
+  );
 
   /*
   -------------------------------------------------------
@@ -464,7 +600,11 @@ function initGame() {
     resize
   );
 
-  initialized = true;
+  initialized =
+    true;
+
+  window.__LAST_ALIVE_GAME_INITIALIZED =
+    true;
 
   console.log(
     "LAST ALIVE GAME INITIALIZED"
@@ -481,26 +621,38 @@ function initGame() {
 
 function startMatch() {
 
-  if (starting || running) {
+  if (
+    starting ||
+    running
+  ) {
+
     return;
+
   }
 
-  starting = true;
+  starting =
+    true;
 
   console.log(
-    "ENTER MATCH CLICKED"
+    "LAST ALIVE: ENTER MATCH CLICKED"
   );
 
   try {
 
     /*
     -----------------------------------------------------
-    INITIALIZE ONLY NOW
+    INITIALIZE
     -----------------------------------------------------
     */
 
     if (!initialized) {
+
+      setBootStatus(
+        "ENGINE STARTING · BUILDING DISTRICT..."
+      );
+
       initGame();
+
     }
 
     /*
@@ -523,12 +675,16 @@ function startMatch() {
     */
 
     try {
+
       audio?.start();
+
     } catch (audioError) {
+
       console.warn(
         "Audio unavailable:",
         audioError
       );
+
     }
 
     /*
@@ -539,13 +695,26 @@ function startMatch() {
 
     if (player) {
 
-      player.hp = 100;
-      player.armor = 75;
-      player.kills = 0;
-      player.alive = true;
-      player.stamina = 100;
-      player.vy = 0;
-      player.grounded = true;
+      player.hp =
+        100;
+
+      player.armor =
+        75;
+
+      player.kills =
+        0;
+
+      player.alive =
+        true;
+
+      player.stamina =
+        100;
+
+      player.vy =
+        0;
+
+      player.grounded =
+        true;
 
       player.object.position.set(
         0,
@@ -553,13 +722,17 @@ function startMatch() {
         120
       );
 
-      player.yaw = 0;
-      player.pitch = -0.08;
+      player.yaw =
+        0;
+
+      player.pitch =
+        -0.08;
+
     }
 
     /*
     -----------------------------------------------------
-    MATCH STATE
+    MATCH
     -----------------------------------------------------
     */
 
@@ -581,7 +754,11 @@ function startMatch() {
     -----------------------------------------------------
     */
 
-    running = true;
+    running =
+      true;
+
+    window.__LAST_ALIVE_MATCH_RUNNING =
+      true;
 
     /*
     -----------------------------------------------------
@@ -643,7 +820,7 @@ function startMatch() {
 
     /*
     -----------------------------------------------------
-    HUD INITIAL VALUES
+    HUD
     -----------------------------------------------------
     */
 
@@ -664,34 +841,43 @@ function startMatch() {
       false
     );
 
+    setBootStatus(
+      "MATCH LIVE · SURVIVE"
+    );
+
     console.log(
-      "MATCH STARTED"
+      "LAST ALIVE: MATCH STARTED"
     );
 
   } catch (error) {
 
-    running = false;
+    running =
+      false;
+
+    window.__LAST_ALIVE_MATCH_RUNNING =
+      false;
 
     console.error(
-      "MATCH START ERROR:",
+      "LAST ALIVE MATCH START ERROR:",
       error
     );
 
     showError(
       error?.message ||
-      "Unable to start match."
+      "Unable to start match"
     );
 
   } finally {
 
-    starting = false;
+    starting =
+      false;
 
   }
 }
 
 /*
 =========================================================
- BIND UI
+ UI BUTTONS
 =========================================================
 */
 
@@ -708,7 +894,7 @@ function bindUI() {
 
   /*
   -------------------------------------------------------
-  ENTER MATCH
+  DEPLOY
   -------------------------------------------------------
   */
 
@@ -719,6 +905,7 @@ function bindUI() {
       event => {
 
         event.preventDefault();
+        event.stopPropagation();
 
         startMatch();
 
@@ -727,8 +914,8 @@ function bindUI() {
 
   } else {
 
-    console.error(
-      "playBtn not found."
+    throw new Error(
+      "playBtn not found"
     );
 
   }
@@ -798,15 +985,22 @@ function bindUI() {
 
         event.preventDefault();
 
-        running = false;
+        running =
+          false;
 
-        document
-          .exitPointerLock?.();
+        window.__LAST_ALIVE_MATCH_RUNNING =
+          false;
+
+        document.exitPointerLock?.();
 
         if (ui.lobby) {
+
           ui.lobby();
+
         } else {
+
           window.location.reload();
+
         }
 
       }
@@ -832,7 +1026,7 @@ function bindUI() {
         event.code === "KeyR"
       ) {
 
-        weapons.reload();
+        weapons?.reload();
 
       }
 
@@ -840,7 +1034,9 @@ function bindUI() {
         event.code === "Digit1"
       ) {
 
-        weapons.switch(0);
+        weapons?.switch(
+          0
+        );
 
       }
 
@@ -848,7 +1044,9 @@ function bindUI() {
         event.code === "Digit2"
       ) {
 
-        weapons.switch(1);
+        weapons?.switch(
+          1
+        );
 
       }
 
@@ -856,7 +1054,9 @@ function bindUI() {
         event.code === "Digit3"
       ) {
 
-        weapons.switch(2);
+        weapons?.switch(
+          2
+        );
 
       }
 
@@ -885,7 +1085,9 @@ function bindUI() {
         if (
           window.innerWidth <= 700
         ) {
+
           return;
+
         }
 
         if (
@@ -909,16 +1111,21 @@ function bindUI() {
 =========================================================
 */
 
-function finishMatch(won) {
+function finishMatch(
+  won
+) {
 
   if (!running) {
     return;
   }
 
-  running = false;
+  running =
+    false;
 
-  document
-    .exitPointerLock?.();
+  window.__LAST_ALIVE_MATCH_RUNNING =
+    false;
+
+  document.exitPointerLock?.();
 
   const aliveBots =
     bots
@@ -964,7 +1171,9 @@ function resize() {
     !camera ||
     !renderer
   ) {
+
     return;
+
   }
 
   camera.aspect =
@@ -977,7 +1186,6 @@ function resize() {
     window.innerWidth,
     window.innerHeight
   );
-
 }
 
 /*
@@ -996,7 +1204,9 @@ function gameLoop() {
     !renderer ||
     !clock
   ) {
+
     return;
+
   }
 
   const dt =
@@ -1038,7 +1248,7 @@ function gameLoop() {
 
     /*
     -----------------------------------------------------
-    WEAPON
+    WEAPONS
     -----------------------------------------------------
     */
 
@@ -1066,7 +1276,7 @@ function gameLoop() {
 
     /*
     -----------------------------------------------------
-    ZONE
+    SAFE ZONE
     -----------------------------------------------------
     */
 
@@ -1213,36 +1423,66 @@ function gameLoop() {
 
 /*
 =========================================================
- BOOT
+ FINAL BOOT
 =========================================================
 */
 
 try {
 
+  bindUI();
+
   /*
   IMPORTANT:
-  UI BUTTON IS BOUND FIRST.
-  GAME DOES NOT INITIALIZE UNTIL ENTER MATCH.
+  Only now do we tell boot.js that
+  main.js successfully loaded.
   */
 
-  bindUI();
+  window.__LAST_ALIVE_READY =
+    true;
+
+  setBootStatus(
+    "SYSTEM READY · ENGINE ONLINE"
+  );
+
+  console.log(
+    "===================================="
+  );
 
   console.log(
     "LAST ALIVE UI READY"
   );
 
-} catch (error) {
-
-  console.error(
-    "UI BIND ERROR:",
-    error
+  console.log(
+    "DEPLOY BUTTON READY"
   );
 
+  console.log(
+    "===================================="
+  );
+
+} catch (error) {
+
+  window.__LAST_ALIVE_READY =
+    false;
+
+  setBootStatus(
+    "ENGINE ERROR · " +
+      (
+        error?.message ||
+        "UI INITIALIZATION FAILED"
+      ),
+    true
+  );
+
+  console.error(
+    "LAST ALIVE UI BIND ERROR:",
+    error
+  );
 }
 
 /*
 =========================================================
- START RENDER LOOP
+ RENDER LOOP
 =========================================================
 */
 
