@@ -682,7 +682,7 @@ function bindUI() {
   const loadoutName=$("loadoutName");
   const statusEl=$("loadoutStatus");
   const updateLoadout=()=>{
-    player?.applyLoadout?.(window.__LA_CHARACTER,window.__LA_OUTFIT);
+    if(player && typeof player.applyLoadout==="function"){ player.applyLoadout(window.__LA_CHARACTER,window.__LA_OUTFIT); }
     const names=["NOVA","RAVEN","KAI","VEX"];
     const clothes=["TACTICAL","URBAN","DESERT","NIGHT"];
     if(loadoutName) loadoutName.textContent=names[window.__LA_CHARACTER]+" // "+clothes[window.__LA_OUTFIT];
