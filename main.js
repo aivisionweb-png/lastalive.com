@@ -1,34 +1,76 @@
-import { CONFIG, WEAPONS } from "./config.js";
-import { InputController } from "./input.js";
-import { WorldMap } from "./map.js";
-import { PlayerController } from "./player.js";
-import { WeaponSystem } from "./weapons.js";
-import { BotManager } from "./bots.js";
-import { LootSystem } from "./loot.js";
-import { SafeZone } from "./zone.js";
-import { AudioSystem } from "./audio.js";
-import { UI } from "./ui.js";
-import { Minimap } from "./minimap.js";
-import { NetworkClient } from "./network.js";
-import { MatchState } from "./match.js";
-import { DebugTools } from "./debug.js";
+import {
+  CONFIG,
+  WEAPONS
+} from "./config.js";
+
+import {
+  InputController
+} from "./input.js";
+
+import {
+  WorldMap
+} from "./map.js";
+
+import {
+  PlayerController
+} from "./player.js";
+
+import {
+  WeaponSystem
+} from "./weapons.js";
+
+import {
+  BotManager
+} from "./bots.js";
+
+import {
+  LootSystem
+} from "./loot.js";
+
+import {
+  SafeZone
+} from "./zone.js";
+
+import {
+  AudioSystem
+} from "./audio.js";
+
+import {
+  UI
+} from "./ui.js";
+
+import {
+  Minimap
+} from "./minimap.js";
+
+import {
+  NetworkClient
+} from "./network.js";
+
+import {
+  MatchState
+} from "./match.js";
+
+import {
+  DebugTools
+} from "./debug.js";
 
 
 /* =========================================================
-   THREE.JS CHECK
+   THREE CHECK
 ========================================================= */
 
 const T = window.THREE;
 
 if (!T) {
   throw new Error(
-    "Three.js failed to load. Check the CDN in index.html."
+    "Three.js failed to load. Check index.html CDN."
   );
 }
 
 
 /* =========================================================
-   GAME STATE
+   GAME VARIABLES
 ========================================================= */
 
 let scene;
@@ -63,7 +105,7 @@ ui.bind();
 
 
 /* =========================================================
-   INITIALIZE
+   INITIALIZE GAME
 ========================================================= */
 
 function init() {
@@ -75,73 +117,94 @@ function init() {
   initialized = true;
 
 
-  /* ---------- SCENE ---------- */
+  /* -------------------------------------------------------
+     SCENE
+  ------------------------------------------------------- */
 
   scene = new T.Scene();
 
-  scene.background = new T.Color(
-    0x708982
-  );
+  scene.background =
+    new T.Color(0x708982);
 
-  scene.fog = new T.FogExp2(
-    0x344d47,
-    0.002
-  );
-
-
-  /* ---------- CAMERA ---------- */
-
-  camera = new T.PerspectiveCamera(
-    70,
-    window.innerWidth / window.innerHeight,
-    0.05,
-    1400
-  );
+  scene.fog =
+    new T.FogExp2(
+      0x344d47,
+      0.002
+    );
 
 
-  /* ---------- RENDERER ---------- */
+  /* -------------------------------------------------------
+     CAMERA
+  ------------------------------------------------------- */
+
+  camera =
+    new T.PerspectiveCamera(
+      70,
+      window.innerWidth /
+        window.innerHeight,
+      0.05,
+      1400
+    );
+
+
+  /* -------------------------------------------------------
+     RENDERER
+  ------------------------------------------------------- */
 
   const canvas =
     document.getElementById("game");
 
-  renderer = new T.WebGLRenderer({
-    canvas,
-    antialias: true,
-    powerPreference: "high-performance"
-  });
+
+  renderer =
+    new T.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      powerPreference:
+        "high-performance"
+    });
+
 
   renderer.setSize(
     window.innerWidth,
     window.innerHeight
   );
 
+
   renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio || 1, 1.5)
+    Math.min(
+      window.devicePixelRatio || 1,
+      1.5
+    )
   );
+
 
   renderer.outputColorSpace =
     T.SRGBColorSpace;
 
+
   renderer.toneMapping =
     T.ACESFilmicToneMapping;
+
 
   renderer.toneMappingExposure =
     1.1;
 
-  renderer.shadowMap.enabled = true;
+
+  renderer.shadowMap.enabled =
+    true;
+
 
   renderer.shadowMap.type =
     T.PCFSoftShadowMap;
 
 
-  /* ---------- CLOCK ---------- */
+  clock =
+    new T.Clock();
 
-  clock = new T.Clock();
 
-
-  /* =====================================================
+  /* =======================================================
      LIGHTING
-  ===================================================== */
+  ======================================================= */
 
   const hemi =
     new T.HemisphereLight(
@@ -159,30 +222,42 @@ function init() {
       3.2
     );
 
+
   sun.position.set(
     -180,
     260,
     100
   );
 
+
   sun.castShadow = true;
+
 
   sun.shadow.mapSize.set(
     1024,
     1024
   );
 
-  sun.shadow.camera.left = -500;
-  sun.shadow.camera.right = 500;
-  sun.shadow.camera.top = 500;
-  sun.shadow.camera.bottom = -500;
+
+  sun.shadow.camera.left =
+    -500;
+
+  sun.shadow.camera.right =
+    500;
+
+  sun.shadow.camera.top =
+    500;
+
+  sun.shadow.camera.bottom =
+    -500;
+
 
   scene.add(sun);
 
 
-  /* =====================================================
+  /* =======================================================
      INPUT
-  ===================================================== */
+  ======================================================= */
 
   input =
     new InputController();
@@ -190,9 +265,9 @@ function init() {
   input.bind();
 
 
-  /* =====================================================
+  /* =======================================================
      MAP
-  ===================================================== */
+  ======================================================= */
 
   map =
     new WorldMap(
@@ -200,14 +275,19 @@ function init() {
       CONFIG
     );
 
+
+  const mapRoot =
+    map.build();
+
+
   scene.add(
-    map.build()
+    mapRoot
   );
 
 
-  /* =====================================================
+  /* =======================================================
      PLAYER
-  ===================================================== */
+  ======================================================= */
 
   player =
     new PlayerController(
@@ -217,29 +297,31 @@ function init() {
       map
     );
 
+
   scene.add(
     player.object
   );
 
 
-  /* =====================================================
-     UI SCENE
-  ===================================================== */
+  /* =======================================================
+     UI SCENE REFERENCE
+  ======================================================= */
 
-  ui.scene = scene;
+  ui.scene =
+    scene;
 
 
-  /* =====================================================
+  /* =======================================================
      AUDIO
-  ===================================================== */
+  ======================================================= */
 
   audio =
     new AudioSystem();
 
 
-  /* =====================================================
+  /* =======================================================
      WEAPONS
-  ===================================================== */
+  ======================================================= */
 
   weapons =
     new WeaponSystem(
@@ -251,9 +333,9 @@ function init() {
     );
 
 
-  /* =====================================================
+  /* =======================================================
      BOTS
-  ===================================================== */
+  ======================================================= */
 
   bots =
     new BotManager(
@@ -265,29 +347,33 @@ function init() {
       ui
     );
 
-  bots.onAllDead = () => {
-    finishMatch(true);
-  };
+
+  bots.onAllDead =
+    () => {
+      finishMatch(true);
+    };
 
 
-  /* =====================================================
+  /* =======================================================
      LOOT
-  ===================================================== */
+  ======================================================= */
 
   loot =
     new LootSystem(
       T,
       map,
       player,
-      ui
+      ui,
+      weapons
     );
+
 
   loot.spawn(30);
 
 
-  /* =====================================================
+  /* =======================================================
      SAFE ZONE
-  ===================================================== */
+  ======================================================= */
 
   zone =
     new SafeZone(
@@ -298,9 +384,9 @@ function init() {
     );
 
 
-  /* =====================================================
+  /* =======================================================
      NETWORK
-  ===================================================== */
+  ======================================================= */
 
   network =
     new NetworkClient(
@@ -309,28 +395,32 @@ function init() {
     );
 
 
-  /* =====================================================
+  /* =======================================================
      MATCH
-  ===================================================== */
+  ======================================================= */
 
   match =
-    new MatchState(ui);
+    new MatchState(
+      ui
+    );
 
 
-  /* =====================================================
+  /* =======================================================
      MINIMAP
-  ===================================================== */
+  ======================================================= */
 
   minimap =
     new Minimap(
-      document.getElementById("minimap"),
+      document.getElementById(
+        "minimap"
+      ),
       CONFIG.world.size
     );
 
 
-  /* =====================================================
+  /* =======================================================
      DEBUG
-  ===================================================== */
+  ======================================================= */
 
   debug =
     new DebugTools(
@@ -340,21 +430,24 @@ function init() {
         bots,
         zone,
         network,
-        restart: restart
+
+        restart: () => {
+          restart();
+        }
       }
     );
 
 
-  /* =====================================================
+  /* =======================================================
      UI EVENTS
-  ===================================================== */
+  ======================================================= */
 
   bindUI();
 
 
-  /* =====================================================
+  /* =======================================================
      RESIZE
-  ===================================================== */
+  ======================================================= */
 
   window.addEventListener(
     "resize",
@@ -362,9 +455,9 @@ function init() {
   );
 
 
-  /* =====================================================
+  /* =======================================================
      START LOOP
-  ===================================================== */
+  ======================================================= */
 
   requestAnimationFrame(
     gameLoop
@@ -383,15 +476,18 @@ function bindUI() {
       "playBtn"
     );
 
+
   const againButton =
     document.getElementById(
       "againBtn"
     );
 
+
   const lobbyButton =
     document.getElementById(
       "lobbyBtn"
     );
+
 
   const gameCanvas =
     document.getElementById(
@@ -399,7 +495,9 @@ function bindUI() {
     );
 
 
-  /* ---------- PLAY ---------- */
+  /* -------------------------------------------------------
+     PLAY
+  ------------------------------------------------------- */
 
   if (playButton) {
 
@@ -407,11 +505,12 @@ function bindUI() {
       "click",
       startMatch
     );
-
   }
 
 
-  /* ---------- PLAY AGAIN ---------- */
+  /* -------------------------------------------------------
+     PLAY AGAIN
+  ------------------------------------------------------- */
 
   if (againButton) {
 
@@ -419,25 +518,29 @@ function bindUI() {
       "click",
       restart
     );
-
   }
 
 
-  /* ---------- LOBBY ---------- */
+  /* -------------------------------------------------------
+     LOBBY
+  ------------------------------------------------------- */
 
   if (lobbyButton) {
 
     lobbyButton.addEventListener(
       "click",
       () => {
+
         window.location.reload();
+
       }
     );
-
   }
 
 
-  /* ---------- KEYBOARD ---------- */
+  /* -------------------------------------------------------
+     KEYBOARD
+  ------------------------------------------------------- */
 
   window.addEventListener(
     "keydown",
@@ -447,27 +550,57 @@ function bindUI() {
         return;
       }
 
-      if (event.code === "KeyR") {
+
+      /* RELOAD */
+
+      if (
+        event.code === "KeyR"
+      ) {
+
         weapons.reload();
+
       }
 
-      if (event.code === "Digit1") {
+
+      /* WEAPON 1 */
+
+      if (
+        event.code === "Digit1"
+      ) {
+
         weapons.switch(0);
+
       }
 
-      if (event.code === "Digit2") {
+
+      /* WEAPON 2 */
+
+      if (
+        event.code === "Digit2"
+      ) {
+
         weapons.switch(1);
+
       }
 
-      if (event.code === "Digit3") {
+
+      /* WEAPON 3 */
+
+      if (
+        event.code === "Digit3"
+      ) {
+
         weapons.switch(2);
+
       }
 
     }
   );
 
 
-  /* ---------- POINTER LOCK ---------- */
+  /* -------------------------------------------------------
+     POINTER LOCK
+  ------------------------------------------------------- */
 
   if (gameCanvas) {
 
@@ -479,11 +612,18 @@ function bindUI() {
           return;
         }
 
+
+        /*
+          Desktop only.
+          Mobile uses touch controls.
+        */
+
         if (
           window.innerWidth <= 700
         ) {
           return;
         }
+
 
         if (
           document.pointerLockElement !==
@@ -525,25 +665,28 @@ function startMatch() {
 
   try {
 
-    /* Audio must start from user gesture */
+    /* AUDIO */
+
     audio.start();
 
 
     /* UI */
+
     ui.start(
       playerName
     );
 
 
-    /* Match */
+    /* MATCH */
+
     match.begin();
 
 
-    /* Game */
     running = true;
 
 
-    /* Pointer lock */
+    /* POINTER LOCK */
+
     if (
       window.innerWidth > 700
     ) {
@@ -555,14 +698,24 @@ function startMatch() {
     }
 
 
-    /* Network */
-    network.connect(
-      playerName
-    );
+    /* NETWORK */
+
+    if (
+      network &&
+      CONFIG.network.enabled
+    ) {
+
+      network.connect(
+        playerName
+      );
+
+    }
 
 
-    /* Reset clock */
+    /* CLOCK */
+
     clock.start();
+
 
   } catch (error) {
 
@@ -571,15 +724,16 @@ function startMatch() {
       error
     );
 
+
     running = false;
 
+
     alert(
-      "Game start error: " +
+      "Game start error:\n\n" +
       error.message
     );
 
   }
-
 }
 
 
@@ -599,7 +753,14 @@ function finishMatch(
   running = false;
 
 
-  document.exitPointerLock?.();
+  document
+    .exitPointerLock?.();
+
+
+  const aliveBots =
+    bots
+      ? bots.alive()
+      : 0;
 
 
   const placement =
@@ -607,15 +768,19 @@ function finishMatch(
       ? 1
       : Math.max(
           2,
-          bots.alive() + 1
+          aliveBots + 1
         );
 
 
-  match.end(
-    won,
-    player.kills,
-    placement
-  );
+  if (match) {
+
+    match.end(
+      won,
+      player?.kills || 0,
+      placement
+    );
+
+  }
 
 }
 
@@ -637,7 +802,10 @@ function restart() {
 
 function resize() {
 
-  if (!camera || !renderer) {
+  if (
+    !camera ||
+    !renderer
+  ) {
     return;
   }
 
@@ -659,7 +827,7 @@ function resize() {
 
 
 /* =========================================================
-   GAME LOOP
+   MAIN GAME LOOP
 ========================================================= */
 
 function gameLoop() {
@@ -681,14 +849,30 @@ function gameLoop() {
     );
 
 
+  /* =======================================================
+     ACTIVE MATCH
+  ======================================================= */
+
   if (running) {
 
+
     /* PLAYER */
-    player.update(dt);
+
+    if (player) {
+
+      player.update(
+        dt
+      );
+
+    }
 
 
-    /* SHOOTING */
+    /* -----------------------------------------------------
+       SHOOTING
+    ----------------------------------------------------- */
+
     if (
+      input &&
       input.fire
     ) {
 
@@ -701,59 +885,137 @@ function gameLoop() {
     }
 
 
-    /* WEAPONS */
-    weapons.update();
+    /* -----------------------------------------------------
+       WEAPON UPDATE
+    ----------------------------------------------------- */
+
+    if (weapons) {
+
+      weapons.update();
+
+    }
 
 
-    /* BOTS */
-    bots.update(
-      dt
-    );
+    /* -----------------------------------------------------
+       BOTS
+    ----------------------------------------------------- */
+
+    if (bots) {
+
+      bots.update(
+        dt
+      );
+
+    }
 
 
-    /* LOOT */
-    loot.update(
-      dt
-    );
+    /* -----------------------------------------------------
+       LOOT
+    ----------------------------------------------------- */
+
+    if (loot) {
+
+      loot.update(
+        dt
+      );
+
+    }
 
 
-    /* SAFE ZONE */
-    zone.update(
-      dt
-    );
+    /* -----------------------------------------------------
+       SAFE ZONE
+    ----------------------------------------------------- */
+
+    if (zone) {
+
+      zone.update(
+        dt
+      );
+
+    }
 
 
-    /* HUD */
-    ui.hp(
-      player.hp
-    );
+    /* -----------------------------------------------------
+       PLAYER HUD
+    ----------------------------------------------------- */
 
-    ui.armor(
-      player.armor
-    );
+    if (player) {
 
-    ui.alive(
-      bots.alive() + 1
-    );
+      ui.hp(
+        player.hp
+      );
 
 
-    /* MINIMAP */
-    minimap.draw(
-      player,
-      bots.bots,
-      zone.radius,
-      loot.items
-    );
+      ui.armor(
+        player.armor
+      );
+
+    }
 
 
-    /* DEBUG */
-    debug.update(
-      Math.round(1 / Math.max(dt, 0.001))
-    );
+    /* -----------------------------------------------------
+       ALIVE COUNT
+    ----------------------------------------------------- */
+
+    if (bots) {
+
+      ui.alive(
+        bots.alive() + 1
+      );
+
+    }
 
 
-    /* PLAYER DEATH */
+    /* -----------------------------------------------------
+       MINIMAP
+    ----------------------------------------------------- */
+
     if (
+      minimap &&
+      player &&
+      bots &&
+      zone
+    ) {
+
+      minimap.draw(
+        player,
+        bots.bots,
+        zone.radius,
+        loot?.items || []
+      );
+
+    }
+
+
+    /* -----------------------------------------------------
+       DEBUG
+    ----------------------------------------------------- */
+
+    if (debug) {
+
+      const fps =
+        Math.round(
+          1 /
+          Math.max(
+            dt,
+            0.001
+          )
+        );
+
+
+      debug.update(
+        fps
+      );
+
+    }
+
+
+    /* -----------------------------------------------------
+       PLAYER DEAD
+    ----------------------------------------------------- */
+
+    if (
+      player &&
       !player.alive
     ) {
 
@@ -764,8 +1026,12 @@ function gameLoop() {
     }
 
 
-    /* ALL ENEMIES DEAD */
+    /* -----------------------------------------------------
+       ALL BOTS DEAD
+    ----------------------------------------------------- */
+
     if (
+      bots &&
       bots.alive() === 0
     ) {
 
@@ -778,7 +1044,9 @@ function gameLoop() {
   }
 
 
-  /* CAMERA ALWAYS UPDATES */
+  /* =======================================================
+     FIRST PERSON CAMERA
+  ======================================================= */
 
   if (
     player &&
@@ -793,7 +1061,9 @@ function gameLoop() {
   }
 
 
-  /* RENDER */
+  /* =======================================================
+     RENDER
+  ======================================================= */
 
   renderer.render(
     scene,
@@ -804,7 +1074,7 @@ function gameLoop() {
 
 
 /* =========================================================
-   START APPLICATION
+   SAFE INITIALIZATION
 ========================================================= */
 
 try {
@@ -818,16 +1088,21 @@ try {
     error
   );
 
+
   const menu =
     document.getElementById(
       "menu"
     );
 
+
   if (menu) {
+
     menu.classList.remove(
       "hidden"
     );
+
   }
+
 
   alert(
     "LAST ALIVE failed to start:\n\n" +
