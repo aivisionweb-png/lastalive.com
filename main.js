@@ -832,6 +832,16 @@ function loop() {
     weapons.update();
 
     bots.update(dt);
+    // Keep enemy silhouettes rendered above distant scene geometry.
+    for (const bot of bots.bots) {
+      if (!bot.alive) continue;
+      bot.object.renderOrder = 8;
+      bot.object.traverse(child => {
+        if (child.material) {
+          child.renderOrder = 8;
+        }
+      });
+    }
 
     loot.update(dt);
 
