@@ -530,11 +530,10 @@ export class PlayerController {
     =========================================
     */
 
-    this.yaw -=
-      look.x * 0.0023;
-
-    this.pitch -=
-      look.y * 0.0018;
+    const lookSensitivity = this.input.isAim() ? 0.00155 : 0.00215;
+    const pitchSensitivity = this.input.isAim() ? 0.00135 : 0.00175;
+    this.yaw -= look.x * lookSensitivity;
+    this.pitch -= look.y * pitchSensitivity;
 
     this.pitch =
       Math.max(
@@ -864,13 +863,8 @@ export class PlayerController {
 
     }
 
-    camera.fov +=
-      (targetFov -
-        camera.fov) *
-      Math.min(
-        1,
-        dt * 12
-      );
+    const fovSpeed = aiming ? 18 : 10;
+    camera.fov += (targetFov - camera.fov) * Math.min(1, dt * fovSpeed);
 
     camera.updateProjectionMatrix();
 
