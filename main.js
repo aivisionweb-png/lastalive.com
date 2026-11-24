@@ -333,6 +333,9 @@ function initGame() {
       ui
     );
 
+  // Hide combatants while the player is in the starting lobby.
+  bots.bots.forEach(bot => { bot.object.visible = false; });
+
   bots.onAllDead =
     () => {
 
@@ -443,6 +446,20 @@ function initGame() {
   window.addEventListener(
     "resize",
     resize
+  );
+
+  // Starting lobby camera: show the actual playable character in the 3D world.
+  player.setCameraMode("TPP");
+  player.character.visible = true;
+  camera.position.set(
+    player.object.position.x + 7.5,
+    4.2,
+    player.object.position.z + 7.5
+  );
+  camera.lookAt(
+    player.object.position.x,
+    1.25,
+    player.object.position.z
   );
 
   initialized = true;
@@ -790,6 +807,23 @@ function loop() {
       clock.getDelta(),
       0.05
     );
+
+  if (!running && initialized && camera && player) {
+    // Slow cinematic orbit while waiting in the starting lobby.
+    const t = performance.now() * 0.00018;
+    const r = 7.5;
+    camera.position.set(
+      player.object.position.x + Math.cos(t) * r,
+      3.6,
+      player.object.position.z + Math.sin(t) * r
+    );
+    camera.lookAt(
+      player.object.position.x,
+      1.2,
+      player.object.position.z
+    );
+    player.character.rotation.y = -t + Math.PI * 0.25;
+  }
 
   if (running) {
 
