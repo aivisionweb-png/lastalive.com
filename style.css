@@ -179,7 +179,7 @@ body{background:#070b10}
 .loading-grid{background-image:linear-gradient(rgba(77,216,255,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(255,157,61,.10) 1px,transparent 1px)}
 .loading-kicker,.loading-title span{color:#ff9d3d}.loading-radar{border-color:rgba(77,216,255,.35)}.loading-radar:after{background:#4dd8ff;box-shadow:0 0 20px #4dd8ff}.loading-radar i{background:linear-gradient(90deg,#4dd8ff,transparent)}.loading-progress i{background:#ff9d3d;box-shadow:0 0 12px #ff9d3d}
 .deploy-btn,.weapon-slot.active{border-color:rgba(255,157,61,.6)!important}.live-dot,.brand span,.game-mark span{color:#ff9d3d!important}
-#cameraBtn{border-color:rgba(77,216,255,.65)!important}
+#cameraBtn{border-color:rgba(77,216,255,.65)!important;display:flex!important}
 @media(max-width:700px){#cameraBtn{right:190px;bottom:30px}.utility-btn{display:block!important}}
 
 /* Phone gameplay: do not block portrait; scale the tactical controls instead. */
@@ -190,4 +190,13 @@ body{background:#070b10}
   .touch-btn{transform:scale(.84);transform-origin:center}
   .weapon-bar{transform:translateX(-50%) scale(.68)}
   .br-counts{bottom:104px}
+}
+
+@media(max-width:700px){
+  #cameraBtn{right:180px!important;bottom:104px!important;width:58px!important;height:58px!important}
+  #glooBtn{right:245px!important;bottom:104px!important}
+  #grenadeBtn{right:310px!important;bottom:104px!important}
+  #medkitBtn{right:375px!important;bottom:104px!important}
+  #vehicleBtn{right:10px!important;bottom:210px!important}
+  #mobileControls:after{display:none!important}
 }
