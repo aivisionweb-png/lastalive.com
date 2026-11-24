@@ -1,64 +1,40 @@
 export const CONFIG = {
   world: {
-    size: 900,
+    size: 1600,
     groundY: 0,
-    botCount: 14
+    botCount: 49
   },
 
   player: {
     height: 1.75,
     radius: 0.42,
-
-    walkSpeed: 6.5,
-    sprintSpeed: 10.8,
-    crouchSpeed: 3.2,
-
-    jump: 8.5,
+    walkSpeed: 7,
+    sprintSpeed: 12,
+    crouchSpeed: 3.5,
+    jump: 8.8,
     gravity: 24,
-
     maxHP: 100,
     maxArmor: 100
   },
 
   zone: {
-    startRadius: 330,
-
+    startRadius: 700,
     phases: [
-      {
-        wait: 18,
-        target: 260,
-        duration: 22,
-        damage: 1
-      },
-
-      {
-        wait: 12,
-        target: 195,
-        duration: 20,
-        damage: 2
-      },
-
-      {
-        wait: 10,
-        target: 125,
-        duration: 18,
-        damage: 4
-      },
-
-      {
-        wait: 8,
-        target: 65,
-        duration: 16,
-        damage: 7
-      }
+      { wait: 22, target: 560, duration: 28, damage: 1 },
+      { wait: 16, target: 430, duration: 26, damage: 2 },
+      { wait: 14, target: 310, duration: 24, damage: 3 },
+      { wait: 12, target: 210, duration: 22, damage: 5 },
+      { wait: 10, target: 120, duration: 18, damage: 8 },
+      { wait: 8, target: 45, duration: 15, damage: 12 }
     ]
   },
 
   bots: {
-    detect: 150,
-    shootRange: 75,
-    shootCooldown: 1.0,
-    speed: 2.2
+    detect: 260,
+    shootRange: 115,
+    speed: 3.2,
+    minRange: 18,
+    accuracy: 0.62
   },
 
   debug: {
@@ -71,55 +47,90 @@ export const CONFIG = {
   }
 };
 
-
 export const WEAPONS = [
   {
     id: "ar",
-    name: "AR-01",
-
+    name: "VX-556",
+    type: "ASSAULT RIFLE",
     damage: 25,
     rate: 105,
-
     mag: 30,
-    reserve: 120,
-
+    reserve: 180,
     spread: 0.012,
-    range: 240,
-
-    reload: 0.9
+    range: 280,
+    reload: 0.9,
+    recoil: 0.014,
+    scope: "RED DOT"
   },
-
   {
-    id: "pistol",
-    name: "PX-9",
-
-    damage: 34,
-    rate: 260,
-
-    mag: 12,
-    reserve: 72,
-
-    spread: 0.018,
-    range: 180,
-
-    reload: 0.75
+    id: "smg",
+    name: "K-9",
+    type: "SMG",
+    damage: 18,
+    rate: 72,
+    mag: 40,
+    reserve: 240,
+    spread: 0.022,
+    range: 170,
+    reload: 0.8,
+    recoil: 0.010,
+    scope: "HOLO"
   },
-
   {
     id: "shotgun",
     name: "M-12",
-
+    type: "SHOTGUN",
     damage: 12,
     rate: 680,
-
     mag: 6,
-    reserve: 36,
-
-    spread: 0.095,
-    pellets: 8,
-
-    range: 85,
-
-    reload: 1.15
+    reserve: 42,
+    spread: 0.075,
+    pellets: 9,
+    range: 95,
+    reload: 1.15,
+    recoil: 0.045,
+    scope: "IRON"
+  },
+  {
+    id: "dmr",
+    name: "R-47",
+    type: "DMR",
+    damage: 48,
+    rate: 360,
+    mag: 20,
+    reserve: 120,
+    spread: 0.006,
+    range: 420,
+    reload: 1.25,
+    recoil: 0.020,
+    scope: "4X"
+  },
+  {
+    id: "sniper",
+    name: "VSR-9",
+    type: "SNIPER",
+    damage: 95,
+    rate: 1150,
+    mag: 5,
+    reserve: 35,
+    spread: 0.001,
+    range: 800,
+    reload: 1.7,
+    recoil: 0.060,
+    scope: "6X"
+  },
+  {
+    id: "pistol",
+    name: "PX-9",
+    type: "PISTOL",
+    damage: 34,
+    rate: 260,
+    mag: 15,
+    reserve: 90,
+    spread: 0.016,
+    range: 210,
+    reload: 0.75,
+    recoil: 0.012,
+    scope: "IRON"
   }
 ];
