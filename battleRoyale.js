@@ -41,6 +41,8 @@ export class BattleRoyaleSystem {
 
   start(){
     this.started=true; this.dropActive=true; this.dropTime=0;
+    // Combat is locked during the descent. Bots are revealed only after landing.
+    this.player.__combatLocked=true;
     this.player.object.position.set(
       (Math.random()-.5)*(this.c.world.size*.42), 85,
       (Math.random()-.5)*(this.c.world.size*.42)
@@ -52,7 +54,11 @@ export class BattleRoyaleSystem {
   }
 
   endDrop(){
-    this.dropActive=false; this.player.object.position.y=0; this.player.vy=0; this.player.grounded=true;
+    this.dropActive=false;
+    this.player.object.position.y=0;
+    this.player.vy=0;
+    this.player.grounded=true;
+    this.player.__combatLocked=false;
     this.ui.toast("LANDING CONFIRMED");
   }
 
