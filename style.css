@@ -151,3 +151,23 @@ body.ads-active .weapon-bar{opacity:.25}
   .mobile-tip{z-index:101!important}
   .weapon-bar{z-index:22!important}
 }
+
+
+/* ===== BATTLE ROYALE HUD ===== */
+.br-counts{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:8;padding:7px 11px;background:rgba(3,8,6,.78);border:1px solid rgba(95,224,173,.22);color:#b9c9c1;font:8px monospace;letter-spacing:1.5px;backdrop-filter:blur(10px);pointer-events:none;white-space:nowrap}
+.utility-btn{display:none}
+@media(max-width:700px){
+  .br-counts{bottom:145px;font-size:7px;max-width:92vw}
+  .utility-btn{display:block;width:58px;height:58px}
+  #glooBtn{right:238px;bottom:132px}
+  #grenadeBtn{right:300px;bottom:132px}
+  #medkitBtn{right:362px;bottom:132px}
+  #vehicleBtn{right:424px;bottom:132px;width:64px;border-radius:18px}
+}
+@media(max-width:430px){
+  #glooBtn{right:190px;bottom:126px}
+  #grenadeBtn{right:252px;bottom:126px}
+  #medkitBtn{right:314px;bottom:126px}
+  #vehicleBtn{right:10px;bottom:205px;width:58px}
+  .br-counts{bottom:116px}
+}
