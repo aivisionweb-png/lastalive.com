@@ -314,6 +314,28 @@ export class BotManager {
     }
   }
 
+  relocateAroundPlayer() {
+    const center=this.player.object.position.clone();
+    center.y=0;
+
+    this.bots.forEach((bot,index)=>{
+      const angle=(index/this.bots.length)*Math.PI*2 + Math.random()*.5;
+      const radius=index<16 ? 55+Math.random()*180 : 220+Math.random()*650;
+      const pos=new this.T.Vector3(
+        center.x+Math.cos(angle)*radius,
+        0,
+        center.z+Math.sin(angle)*radius
+      );
+
+      bot.object.position.copy(pos);
+      bot.object.visible=true;
+      bot.alive=true;
+      bot.hp=100;
+      bot.armor=50;
+    });
+  }
+
+
   hit(
     bot,
     damage
