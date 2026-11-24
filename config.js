@@ -1,6 +1,6 @@
 export const CONFIG = {
   world: {
-    size: 1600,
+    size: 2400,
     groundY: 0,
     botCount: 49
   },
@@ -9,7 +9,7 @@ export const CONFIG = {
     height: 1.75,
     radius: 0.42,
     walkSpeed: 7,
-    sprintSpeed: 12,
+    sprintSpeed: 13,
     crouchSpeed: 3.5,
     jump: 8.8,
     gravity: 24,
@@ -18,19 +18,19 @@ export const CONFIG = {
   },
 
   zone: {
-    startRadius: 700,
+    startRadius: 1050,
     phases: [
-      { wait: 22, target: 560, duration: 28, damage: 1 },
-      { wait: 16, target: 430, duration: 26, damage: 2 },
-      { wait: 14, target: 310, duration: 24, damage: 3 },
-      { wait: 12, target: 210, duration: 22, damage: 5 },
-      { wait: 10, target: 120, duration: 18, damage: 8 },
-      { wait: 8, target: 45, duration: 15, damage: 12 }
+      { wait: 22, target: 820, duration: 30, damage: 1 },
+      { wait: 18, target: 650, duration: 28, damage: 2 },
+      { wait: 15, target: 500, duration: 26, damage: 3 },
+      { wait: 12, target: 350, duration: 24, damage: 5 },
+      { wait: 10, target: 210, duration: 20, damage: 8 },
+      { wait: 8, target: 90, duration: 16, damage: 12 }
     ]
   },
 
   bots: {
-    detect: 260,
+    detect: 320,
     shootRange: 115,
     speed: 3.2,
     minRange: 18,
