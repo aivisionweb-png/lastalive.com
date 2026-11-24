@@ -41,3 +41,33 @@ button,input{font:inherit}button{cursor:pointer}
 #joystick{position:absolute;left:22px;bottom:26px;width:130px;height:130px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(10,15,13,.35);pointer-events:auto}#joystickStick{position:absolute;width:58px;height:58px;left:36px;top:36px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3)}#touchLook{position:absolute;right:0;top:0;width:52%;height:70%;pointer-events:auto}
 @media(max-width:850px){.menu-layout{grid-template-columns:1fr;gap:20px;justify-items:center;overflow:auto;padding:28px 0}.hero-copy{display:none}.deploy-panel{width:min(500px,100%)}.menu-topbar{padding:20px}}
 @media(max-width:700px){.minimap-wrap{width:125px;height:125px;right:10px;top:70px}.bottom-left{left:10px;bottom:10px;width:190px}.bottom-right{right:10px;bottom:10px}.weapon-info strong{font-size:24px}.top-left{left:10px;top:10px}.brand{font-size:16px}.match-stat{padding:8px}.zone-card{top:10px}.crosshair{transform:translate(-50%,-50%) scale(.8)}#mobileControls{display:block!important}.killfeed{right:10px;top:205px}.debug{top:60px;left:8px;font-size:9px}.result-grid{gap:4px}.menu-topbar{padding:16px 18px}.game-mark{font-size:16px}.deploy-panel{padding:22px}.deploy-btn{height:58px}}
+
+
+/* ===== PREMIUM LOADING ===== */
+#loadingScreen{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;justify-content:space-between;padding:28px 38px;background:#030605;color:#eef5f1;overflow:hidden;transition:opacity .5s,visibility .5s}
+#loadingScreen.done{opacity:0;visibility:hidden;pointer-events:none}
+.loading-grid{position:absolute;inset:0;opacity:.13;background-image:linear-gradient(rgba(100,230,180,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(100,230,180,.16) 1px,transparent 1px);background-size:70px 70px;mask-image:radial-gradient(circle at center,#000,transparent 78%)}
+.loading-top,.loading-bottom{position:relative;z-index:2;display:flex;justify-content:space-between;font:9px monospace;letter-spacing:2px;color:#718078}
+.loading-core{position:relative;z-index:2;width:min(620px,90vw);margin:auto;text-align:center}
+.loading-radar{width:170px;height:170px;border:1px solid rgba(95,224,173,.25);border-radius:50%;margin:0 auto 35px;position:relative;box-shadow:0 0 50px rgba(95,224,173,.08)}
+.loading-radar:before,.loading-radar:after{content:"";position:absolute;inset:15px;border:1px solid rgba(95,224,173,.13);border-radius:50%}
+.loading-radar:after{inset:50%;background:#5fe0ad;box-shadow:0 0 20px #5fe0ad}
+.loading-radar i{position:absolute;width:50%;height:1px;left:50%;top:50%;transform-origin:left;animation:radar 1.8s linear infinite;background:linear-gradient(90deg,#5fe0ad,transparent)}
+@keyframes radar{to{transform:rotate(360deg)}}
+.loading-kicker{font:9px monospace;letter-spacing:4px;color:#5fe0ad}
+.loading-title{font-size:clamp(48px,8vw,94px);font-weight:950;letter-spacing:-5px;margin:8px 0}.loading-title span{color:#5fe0ad}
+.loading-sub{font:10px monospace;letter-spacing:3px;color:#718078;margin-bottom:25px}
+.loading-progress{height:2px;background:#17231e;width:min(430px,80vw);margin:auto;overflow:hidden}.loading-progress i{display:block;width:12%;height:100%;background:#5fe0ad;box-shadow:0 0 12px #5fe0ad;transition:width .35s}
+#loadingText{margin-top:12px;font:9px monospace;color:#84938b;letter-spacing:1px}
+.loading-bottom{opacity:.7}
+
+/* ===== PREMIUM WEAPON BAR ===== */
+.weapon-bar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:7;display:flex;gap:4px;padding:5px;background:rgba(4,9,7,.76);border:1px solid rgba(255,255,255,.11);backdrop-filter:blur(12px)}
+.weapon-slot{min-width:78px;padding:7px 8px;border:1px solid transparent;color:#69776f;background:rgba(255,255,255,.025);font-size:8px;letter-spacing:1px;text-align:left}.weapon-slot b{display:inline-block;margin-right:6px;color:#dce8e1}.weapon-slot.active{border-color:rgba(95,224,173,.5);background:rgba(95,224,173,.09);color:#fff}.weapon-slot span{display:block;margin-top:4px;font-size:7px}
+.weapon-slot.empty{opacity:.35}
+
+/* ===== SCOPE ===== */
+.scope-overlay{position:fixed;inset:0;z-index:50;pointer-events:none}.scope-vignette{position:absolute;inset:0;background:radial-gradient(circle at center,transparent 27%,rgba(0,0,0,.94) 31%,#000 57%)}.scope-ring{position:absolute;left:50%;top:50%;width:min(54vw,620px);height:min(54vw,620px);transform:translate(-50%,-50%);border:2px solid rgba(210,235,224,.8);border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.8),inset 0 0 30px rgba(0,0,0,.4)}.scope-cross{position:absolute;background:rgba(235,245,240,.72)}.scope-cross.h{left:5%;right:5%;height:1px;top:50%}.scope-cross.v{top:5%;bottom:5%;width:1px;left:50%}.scope-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:#d8e8df;left:50%;top:50%;transform:translate(-50%,-50%)}.scope-mark{position:absolute;color:rgba(235,245,240,.7);font:10px monospace}.m1{left:68%;top:49%}.m2{left:62%;top:49%}.m3{left:56%;top:49%}.scope-label{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);font:9px monospace;letter-spacing:2px;color:#dce8e1;background:rgba(0,0,0,.5);padding:6px 9px}
+body.ads-active .crosshair{opacity:0}
+body.ads-active .weapon-bar{opacity:.25}
+@media(max-width:700px){#loadingScreen{padding:20px}.weapon-bar{bottom:78px;max-width:96vw;overflow:hidden}.weapon-slot{min-width:58px}.weapon-slot span{font-size:6px}.scope-ring{width:70vw;height:70vw}}
