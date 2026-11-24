@@ -12,6 +12,8 @@ import { Minimap } from "./minimap.js";
 import { NetworkClient } from "./network.js";
 import { MatchState } from "./match.js";
 import { DebugTools } from "./debug.js";
+import { BattleRoyaleSystem } from "./battleRoyale.js";
+import { MultiplayerAvatars } from "./multiplayer.js";
 
 const T = window.THREE;
 
@@ -32,6 +34,8 @@ let network;
 let match;
 let minimap;
 let debug;
+let battleRoyale;
+let multiplayerAvatars;
 
 let initialized = false;
 let running = false;
@@ -369,7 +373,10 @@ function initGame() {
       weapons
     );
 
-  loot.spawn(100);
+  loot.spawn(140);
+
+  battleRoyale = new BattleRoyaleSystem(T, scene, player, map, ui, input, CONFIG);
+  multiplayerAvatars = new MultiplayerAvatars(T, scene, network, player);
 
   /*
   =========================================
@@ -504,6 +511,7 @@ function startMatch() {
     player.kills = 0;
     player.alive = true;
     player.stamina = 100;
+    battleRoyale?.start();
 
     player.object.position.set(
       0,
@@ -572,11 +580,12 @@ function startMatch() {
     ui.armor(player.armor);
 
     ui.alive(
-      bots.alive() + 1
+      bots.alive() + 1 + (network?.remotePlayers?.size || 0)
     );
 
     ui.compass?.(player.yaw);
     ui.scope?.(input.isAim(), weapons.current);
+    ui.toast("DROP PHASE · W/A/S/D OR JOYSTICK TO STEER");
 
     ui.weapon(
       weapons.current,
@@ -802,6 +811,8 @@ function loop() {
   if (running) {
 
     player.update(dt);
+    battleRoyale?.update(dt, bots);
+    multiplayerAvatars?.update();
 
     /*
     FIRST PERSON CAMERA
