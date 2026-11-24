@@ -308,31 +308,75 @@ body{background:var(--la-bg)}
   #sprintBtn{left:160px!important;bottom:30px!important}
 }
 
-/* ===== HARD TOUCH DEVICE MODE ===== */
-body.la-touch-device #mobileControls,
-@media (pointer:coarse) {
-  #mobileControls{display:block!important;visibility:visible!important;opacity:1!important}
+/* ===== HARD TOUCH DEVICE MODE // VALID MOBILE CSS ===== */
+@media (pointer:coarse), (max-width:700px){
+  #mobileControls{
+    position:fixed!important;inset:0!important;
+    display:block!important;visibility:visible!important;opacity:1!important;
+    z-index:9999!important;pointer-events:none!important;
+  }
+  #mobileControls.hidden{display:block!important}
+  #mobileControls .touch-btn{
+    display:flex!important;visibility:visible!important;opacity:1!important;
+    pointer-events:auto!important;position:absolute!important;
+    align-items:center;justify-content:center;z-index:50!important;
+  }
+  #mobileControls #joystick{
+    display:block!important;visibility:visible!important;opacity:1!important;
+    pointer-events:auto!important;position:absolute!important;z-index:50!important;
+    left:18px!important;bottom:18px!important;width:126px!important;height:126px!important;
+  }
+  #touchLook{
+    position:absolute!important;right:0!important;top:0!important;
+    width:48%!important;height:100%!important;
+    pointer-events:auto!important;z-index:1!important;
+    touch-action:none!important;
+  }
+
+  /* Core controls — kept inside every normal phone viewport */
+  #mobileControls .fire{
+    right:18px!important;bottom:22px!important;
+    width:88px!important;height:88px!important;
+  }
+  #mobileControls #aimBtn{right:116px!important;bottom:36px!important;width:58px!important;height:58px!important}
+  #mobileControls #jumpBtn{right:22px!important;bottom:128px!important;width:58px!important;height:58px!important}
+  #mobileControls #crouchBtn{right:92px!important;bottom:112px!important;width:58px!important;height:58px!important}
+  #mobileControls #sprintBtn{left:154px!important;bottom:24px!important;width:58px!important;height:58px!important}
+  #mobileControls #reloadBtn{right:184px!important;bottom:28px!important;width:46px!important;height:46px!important}
+
+  /* Utility row: compact and actually reachable */
+  #mobileControls #glooBtn{right:18px!important;top:92px!important;width:48px!important;height:48px!important}
+  #mobileControls #grenadeBtn{right:76px!important;top:92px!important;width:48px!important;height:48px!important}
+  #mobileControls #medkitBtn{right:134px!important;top:92px!important;width:48px!important;height:48px!important}
+  #mobileControls #vehicleBtn{right:192px!important;top:92px!important;width:48px!important;height:48px!important}
+  #mobileControls .camera-btn{
+    right:18px!important;top:18px!important;bottom:auto!important;
+    width:58px!important;height:58px!important;border-radius:14px!important;
+  }
+
+  /* Compact weapon selector */
+  #weaponBar{
+    left:50%!important;bottom:10px!important;z-index:60!important;
+    max-width:42vw!important;overflow-x:auto!important;
+    transform:translateX(-50%)!important;
+    scrollbar-width:none!important;
+  }
+  #weaponBar::-webkit-scrollbar{display:none}
+  #weaponBar .weapon-slot{min-width:48px!important;padding:6px 5px!important;font-size:7px!important}
+  .br-counts{right:8px!important;bottom:118px!important;max-width:46vw;white-space:nowrap;overflow:hidden}
+
+  .mobile-tip{display:none!important}
 }
-@media (pointer:coarse) {
-  #mobileControls{position:fixed!important;inset:0!important;z-index:9999!important;pointer-events:none!important}
-  #mobileControls .touch-btn{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;position:absolute!important}
-  #mobileControls #joystick{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;position:absolute!important}
-  #touchLook{pointer-events:auto!important;z-index:1!important}
-  #mobileControls .touch-btn,#mobileControls #joystick{z-index:50!important}
-  #mobileControls .camera-btn{display:flex!important;right:18px!important;top:18px!important;bottom:auto!important;width:64px!important;height:64px!important;border-radius:16px!important}
-  #mobileControls .fire{right:18px!important;bottom:24px!important;width:96px!important;height:96px!important}
-  #mobileControls #aimBtn{right:126px!important;bottom:40px!important}
-  #mobileControls #jumpBtn{right:28px!important;bottom:142px!important}
-  #mobileControls #crouchBtn{right:112px!important;bottom:132px!important}
-  #mobileControls #reloadBtn{right:224px!important;bottom:40px!important}
-  #mobileControls #sprintBtn{left:164px!important;bottom:30px!important}
-  #mobileControls #joystick{left:18px!important;bottom:20px!important;width:136px!important;height:136px!important;border-radius:50%!important}
-  #mobileControls .utility-btn{display:flex!important}
-  #mobileControls #glooBtn{right:226px!important;bottom:150px!important}
-  #mobileControls #grenadeBtn{right:290px!important;bottom:150px!important}
-  #mobileControls #medkitBtn{right:354px!important;bottom:150px!important}
-  #mobileControls #vehicleBtn{right:18px!important;bottom:242px!important}
-  #weaponBar{z-index:60!important;bottom:168px!important}
+
+/* Tiny phones */
+@media (max-width:380px){
+  #mobileControls #joystick{width:112px!important;height:112px!important;left:12px!important;bottom:14px!important}
+  #mobileControls #sprintBtn{left:130px!important}
+  #mobileControls .fire{right:12px!important;width:80px!important;height:80px!important}
+  #mobileControls #aimBtn{right:98px!important}
+  #mobileControls #jumpBtn{right:14px!important;bottom:112px!important}
+  #mobileControls #crouchBtn{right:78px!important;bottom:98px!important}
+  #mobileControls #reloadBtn{right:160px!important}
 }
 
 /* ===== STARTING LOBBY ===== */
