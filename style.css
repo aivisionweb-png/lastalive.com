@@ -181,3 +181,13 @@ body{background:#070b10}
 .deploy-btn,.weapon-slot.active{border-color:rgba(255,157,61,.6)!important}.live-dot,.brand span,.game-mark span{color:#ff9d3d!important}
 #cameraBtn{border-color:rgba(77,216,255,.65)!important}
 @media(max-width:700px){#cameraBtn{right:190px;bottom:30px}.utility-btn{display:block!important}}
+
+/* Phone gameplay: do not block portrait; scale the tactical controls instead. */
+@media(max-width:700px) and (orientation:portrait){
+  #mobileControls:after{display:none!important}
+  .mobile-tip{display:block!important}
+  #joystick{transform:scale(.82);transform-origin:bottom left}
+  .touch-btn{transform:scale(.84);transform-origin:center}
+  .weapon-bar{transform:translateX(-50%) scale(.68)}
+  .br-counts{bottom:104px}
+}
