@@ -200,3 +200,110 @@ body{background:#070b10}
   #vehicleBtn{right:10px!important;bottom:210px!important}
   #mobileControls:after{display:none!important}
 }
+
+/* ===== DISTRICT 09 // FINAL VISUAL + MOBILE PATCH ===== */
+:root{
+  --la-cyan:#35d9ff;
+  --la-blue:#1976ff;
+  --la-orange:#ff9b45;
+  --la-red:#ff3d57;
+  --la-bg:#050914;
+}
+body{background:var(--la-bg)}
+.menu-screen{
+  background:
+    radial-gradient(circle at 78% 32%,rgba(53,217,255,.16),transparent 25%),
+    radial-gradient(circle at 18% 78%,rgba(255,155,69,.12),transparent 25%),
+    linear-gradient(135deg,#03050b,#08111f 52%,#05070d);
+}
+.eyebrow,.loading-kicker{color:var(--la-cyan)!important}
+.hero-copy h1 span,.loading-title span{color:var(--la-orange)!important}
+.deploy-panel,.menu-card{
+  background:rgba(5,10,20,.88);
+  border-color:rgba(53,217,255,.22);
+  box-shadow:0 30px 100px rgba(0,0,0,.55),0 0 45px rgba(25,118,255,.08);
+}
+.deploy-btn{
+  background:linear-gradient(100deg,var(--la-orange),#ffc15c)!important;
+  box-shadow:0 0 28px rgba(255,155,69,.2);
+}
+.deploy-btn:hover{background:linear-gradient(100deg,#ffb263,#ffd477)!important}
+.live-dot,.brand span,.game-mark span{color:var(--la-cyan)!important}
+.match-stat,.zone-card,.weapon-info,.bars{
+  background:rgba(4,9,18,.78);
+  border-color:rgba(53,217,255,.16);
+}
+.bar i{background:linear-gradient(90deg,#35d9ff,#1976ff)!important}
+.armor .bar i{background:linear-gradient(90deg,#ff9b45,#ffcc70)!important}
+.zone-card span{color:#35d9ff!important}
+.crosshair i{background:#dffaff;box-shadow:0 0 7px rgba(53,217,255,.8)}
+.weapon-bar{background:rgba(3,7,15,.82);border-color:rgba(53,217,255,.2)}
+.weapon-slot.active{border-color:rgba(255,155,69,.8)!important;background:rgba(255,155,69,.11)!important;box-shadow:inset 0 0 18px rgba(255,155,69,.08)}
+.minimap-wrap{background:#07101b;border-color:rgba(53,217,255,.35);box-shadow:0 0 28px rgba(25,118,255,.15)}
+.br-counts{background:rgba(3,7,15,.85);border-color:rgba(53,217,255,.25);color:#bcefff}
+.loading-radar{border-color:rgba(53,217,255,.42)!important;box-shadow:0 0 55px rgba(53,217,255,.12)}
+.loading-radar:after{background:var(--la-cyan)!important;box-shadow:0 0 24px var(--la-cyan)!important}
+.loading-radar i{background:linear-gradient(90deg,var(--la-cyan),transparent)!important}
+.loading-progress i{background:linear-gradient(90deg,var(--la-cyan),var(--la-orange))!important}
+
+/* MOBILE: never allow the .hidden class to suppress active controls */
+@media(max-width:700px){
+  #mobileControls{
+    position:fixed!important;
+    inset:0!important;
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:120!important;
+    pointer-events:none!important;
+  }
+  #mobileControls.hidden{display:block!important;visibility:visible!important}
+  #mobileControls .touch-btn,
+  #mobileControls #joystick{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  #touchLook{z-index:2!important}
+  #mobileControls .touch-btn,#mobileControls #joystick{z-index:10!important}
+  #mobileControls .camera-btn{
+    right:24px!important;top:26px!important;bottom:auto!important;
+    width:60px!important;height:60px!important;
+    border-radius:16px!important;
+    background:rgba(9,20,34,.92)!important;
+    border-color:rgba(53,217,255,.75)!important;
+    box-shadow:0 0 22px rgba(53,217,255,.18)!important;
+  }
+  #mobileControls .fire{
+    right:22px!important;bottom:28px!important;
+    width:92px!important;height:92px!important;
+    background:rgba(180,30,52,.9)!important;
+    border-color:rgba(255,90,105,.95)!important;
+    box-shadow:0 0 25px rgba(255,61,87,.22)!important;
+  }
+  #aimBtn{right:126px!important;bottom:38px!important}
+  #jumpBtn{right:30px!important;bottom:140px!important}
+  #crouchBtn{right:112px!important;bottom:132px!important}
+  #reloadBtn{right:220px!important;bottom:38px!important}
+  #sprintBtn{left:158px!important;bottom:30px!important}
+  #joystick{left:20px!important;bottom:24px!important;width:132px!important;height:132px!important}
+  #glooBtn{right:226px!important;bottom:145px!important}
+  #grenadeBtn{right:290px!important;bottom:145px!important}
+  #medkitBtn{right:354px!important;bottom:145px!important}
+  #vehicleBtn{right:20px!important;bottom:245px!important}
+  .weapon-bar{bottom:168px!important;max-width:72vw!important;overflow-x:auto!important}
+  .weapon-slot{min-width:54px!important}
+  .br-counts{bottom:125px!important}
+  .mobile-tip{bottom:4px!important}
+}
+@media(max-width:430px){
+  #glooBtn{right:200px!important;bottom:150px!important}
+  #grenadeBtn{right:262px!important;bottom:150px!important}
+  #medkitBtn{right:324px!important;bottom:150px!important}
+  #vehicleBtn{right:12px!important;bottom:245px!important}
+  #reloadBtn{right:120px!important;bottom:132px!important}
+  #aimBtn{right:92px!important;bottom:132px!important}
+  #crouchBtn{right:160px!important;bottom:205px!important}
+  #jumpBtn{right:24px!important;bottom:140px!important}
+  #sprintBtn{left:160px!important;bottom:30px!important}
+}
