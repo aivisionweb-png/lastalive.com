@@ -693,7 +693,7 @@ export class PlayerController {
     if(this.cameraMode==="TPP"){
       this.viewModel.visible=false;
       this.character.visible=true;
-      this.character.position.set(0,0,0);
+      this.character.position.copy(this.object.position);
       this.character.rotation.y=this.yaw;
       const behind=new this.T.Vector3(Math.sin(this.yaw),0,Math.cos(this.yaw));
       const target=this.object.position.clone().add(new this.T.Vector3(0,1.35,0));
@@ -910,15 +910,6 @@ export class PlayerController {
     }
 
     return this.alive;
-  }
-
-  setWeapon(def) {
-    this.currentWeapon = def;
-    this.buildWeaponHandsWeapon(def);
-  }
-
-  buildWeaponHandsWeapon(def) {
-    // WeaponSystem owns the normal weapon model; keep current model unchanged.
   }
 
   addRecoil(
