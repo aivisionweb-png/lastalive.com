@@ -911,7 +911,7 @@ function loop() {
     );
 
     ui.compass?.(player.yaw);
-    ui.scope?.(input.isAim(), weapons.current);
+    ui.scope?.(player.cameraMode==="FPP" && input.isAim(), weapons.current);
 
     ui.alive(bots.alive() + 1 + (network?.remotePlayers?.size || 0));
 
