@@ -1,31 +1,47 @@
 export class PlayerController {
-  constructor(T, config, input, map) {
+
+  constructor(
+    T,
+    config,
+    input,
+    map
+  ) {
+
     this.T = T;
     this.c = config;
     this.input = input;
     this.map = map;
 
-    this.object = new T.Group();
+    this.object =
+      new T.Group();
 
     this.object.position.set(
       0,
       0,
-      620
+      650
     );
 
-    this.yaw = 0;
-    this.pitch = -0.05;
+    this.yaw =
+      Math.PI;
+
+    this.pitch =
+      -0.04;
 
     this.vy = 0;
     this.grounded = true;
 
     this.hp = 100;
     this.armor = 75;
+
     this.kills = 0;
+
     this.alive = true;
 
     this.stamina = 100;
+
     this.recoil = 0;
+
+    this.walkTime = 0;
 
     this.viewModel =
       new T.Group();
@@ -33,221 +49,272 @@ export class PlayerController {
     this.gun =
       new T.Group();
 
-    this.currentWeapon = null;
+    this.currentWeapon =
+      null;
 
-    this.build();
+    this.buildWeaponHands();
   }
 
-  build() {
+  buildWeaponHands() {
+
     const T = this.T;
 
-    const body =
-      new T.Mesh(
-        new T.CapsuleGeometry(
-          0.38,
-          0.9,
-          6,
-          10
-        ),
-        new T.MeshStandardMaterial({
-          color: 0x202b27,
-          roughness: 0.75
-        })
-      );
-
-    body.position.y = 1.05;
-
-    this.object.add(body);
-
-    const head =
-      new T.Mesh(
-        new T.SphereGeometry(
-          0.28,
-          16,
-          10
-        ),
-        new T.MeshStandardMaterial({
-          color: 0xb9795b,
-          roughness: 0.9
-        })
-      );
-
-    head.position.y = 1.9;
-
-    this.object.add(head);
-
-    const vest =
-      new T.Mesh(
-        new T.BoxGeometry(
-          0.8,
-          0.7,
-          0.48
-        ),
-        new T.MeshStandardMaterial({
-          color: 0x354a42,
-          roughness: 0.7
-        })
-      );
-
-    vest.position.y = 1.08;
-
-    this.object.add(vest);
-
-    const skin =
-      new T.MeshStandardMaterial({
-        color: 0xb9795b,
-        roughness: 0.85
-      });
+    /*
+    =========================================
+    ARM MATERIALS
+    =========================================
+    */
 
     const sleeve =
       new T.MeshStandardMaterial({
-        color: 0x28352f,
-        roughness: 0.75
+        color: 0x202b27,
+        roughness: 0.8
       });
 
-    const armL =
+    const skin =
+      new T.MeshStandardMaterial({
+        color: 0xb97859,
+        roughness: 0.9
+      });
+
+    /*
+    =========================================
+    LEFT ARM
+    =========================================
+    */
+
+    const leftArm =
       new T.Mesh(
         new T.CapsuleGeometry(
-          0.11,
-          0.48,
+          0.105,
+          0.55,
           5,
-          8
+          10
         ),
         sleeve
       );
 
-    armL.rotation.z = 0.28;
+    leftArm.rotation.z =
+      0.32;
 
-    armL.position.set(
-      -0.22,
-      -0.18,
-      -0.62
+    leftArm.position.set(
+      -0.25,
+      -0.19,
+      -0.54
     );
 
-    const armR =
+    /*
+    =========================================
+    RIGHT ARM
+    =========================================
+    */
+
+    const rightArm =
       new T.Mesh(
         new T.CapsuleGeometry(
-          0.11,
-          0.48,
+          0.105,
+          0.55,
           5,
-          8
+          10
         ),
         sleeve
       );
 
-    armR.rotation.z = -0.28;
+    rightArm.rotation.z =
+      -0.32;
 
-    armR.position.set(
-      0.18,
+    rightArm.position.set(
+      0.25,
       -0.2,
-      -0.66
+      -0.56
     );
 
-    const handL =
+    /*
+    =========================================
+    HANDS
+    =========================================
+    */
+
+    const leftHand =
       new T.Mesh(
         new T.SphereGeometry(
           0.13,
-          10,
+          12,
           8
         ),
         skin
       );
 
-    handL.position.set(
-      -0.18,
-      -0.12,
-      -0.91
+    leftHand.position.set(
+      -0.17,
+      -0.15,
+      -0.83
     );
 
-    const handR =
+    const rightHand =
       new T.Mesh(
         new T.SphereGeometry(
           0.13,
-          10,
+          12,
           8
         ),
         skin
       );
 
-    handR.position.set(
-      0.18,
-      -0.12,
-      -0.92
+    rightHand.position.set(
+      0.17,
+      -0.15,
+      -0.84
     );
 
     this.viewModel.add(
-      armL,
-      armR,
-      handL,
-      handR,
+      leftArm,
+      rightArm,
+      leftHand,
+      rightHand,
       this.gun
     );
   }
 
   setWeapon(def) {
+
     const T = this.T;
 
-    this.currentWeapon = def;
+    this.currentWeapon =
+      def;
 
     while (
       this.gun.children.length
     ) {
+
       this.gun.remove(
         this.gun.children[0]
       );
+
     }
 
-    const color =
+    /*
+    =========================================
+    WEAPON BODY
+    =========================================
+    */
+
+    const weaponColor =
       def.id === "sniper"
-        ? 0x171b1b
+        ? 0x151919
         : def.id === "shotgun"
-        ? 0x5b4b38
+        ? 0x584330
         : def.id === "pistol"
-        ? 0x222625
-        : 0x111615;
+        ? 0x252928
+        : 0x101515;
 
     const length =
       def.id === "sniper"
-        ? 1.9
+        ? 2.05
         : def.id === "shotgun"
-        ? 1.25
+        ? 1.35
         : def.id === "pistol"
-        ? 0.72
-        : 1.35;
+        ? 0.75
+        : 1.5;
 
     const body =
       new T.Mesh(
         new T.BoxGeometry(
-          0.18,
-          0.18,
+          0.22,
+          0.2,
           length
         ),
         new T.MeshStandardMaterial({
-          color,
-          metalness: 0.65,
-          roughness: 0.3
+          color:
+            weaponColor,
+          metalness: 0.7,
+          roughness: 0.28
         })
       );
 
     body.position.set(
-      0.28,
-      -0.08,
-      -0.78
+      0.16,
+      -0.06,
+      -0.88
     );
 
     this.gun.add(body);
+
+    /*
+    =========================================
+    GRIP
+    =========================================
+    */
+
+    const grip =
+      new T.Mesh(
+        new T.BoxGeometry(
+          0.18,
+          0.42,
+          0.18
+        ),
+        new T.MeshStandardMaterial({
+          color: 0x151918,
+          roughness: 0.65
+        })
+      );
+
+    grip.rotation.x =
+      -0.25;
+
+    grip.position.set(
+      0.16,
+      -0.32,
+      -0.43
+    );
+
+    this.gun.add(grip);
+
+    /*
+    =========================================
+    MAGAZINE
+    =========================================
+    */
+
+    const mag =
+      new T.Mesh(
+        new T.BoxGeometry(
+          0.14,
+          0.45,
+          0.2
+        ),
+        new T.MeshStandardMaterial({
+          color: 0x292d2c,
+          metalness: 0.5,
+          roughness: 0.4
+        })
+      );
+
+    mag.position.set(
+      0.16,
+      -0.27,
+      -0.68
+    );
+
+    this.gun.add(mag);
+
+    /*
+    =========================================
+    BARREL
+    =========================================
+    */
 
     const barrel =
       new T.Mesh(
         new T.CylinderGeometry(
           0.045,
-          0.045,
-          0.45,
-          8
+          0.055,
+          0.5,
+          12
         ),
         new T.MeshStandardMaterial({
           color: 0x080a0a,
-          metalness: 0.8,
+          metalness: 0.9,
           roughness: 0.2
         })
       );
@@ -256,51 +323,94 @@ export class PlayerController {
       Math.PI / 2;
 
     barrel.position.set(
-      0.28,
-      -0.08,
-      -0.78 -
-        length / 2 -
-        0.18
+      0.16,
+      -0.05,
+      -1.65
     );
 
-    this.gun.add(barrel);
+    this.gun.add(
+      barrel
+    );
+
+    /*
+    =========================================
+    MUZZLE
+    =========================================
+    */
+
+    const muzzle =
+      new T.Mesh(
+        new T.CylinderGeometry(
+          0.065,
+          0.065,
+          0.18,
+          12
+        ),
+        new T.MeshStandardMaterial({
+          color: 0x050606,
+          metalness: 1,
+          roughness: 0.15
+        })
+      );
+
+    muzzle.rotation.x =
+      Math.PI / 2;
+
+    muzzle.position.set(
+      0.16,
+      -0.05,
+      -1.91
+    );
+
+    this.gun.add(
+      muzzle
+    );
+
+    /*
+    =========================================
+    OPTIC
+    =========================================
+    */
 
     if (
       def.scope &&
       def.scope !== "IRON"
     ) {
+
       const optic =
         new T.Mesh(
           new T.BoxGeometry(
-            0.16,
-            0.16,
-            0.34
+            0.18,
+            0.18,
+            0.38
           ),
           new T.MeshStandardMaterial({
-            color: 0x252c2b,
-            metalness: 0.7,
-            roughness: 0.25
+            color: 0x1e2523,
+            metalness: 0.8,
+            roughness: 0.2
           })
         );
 
       optic.position.set(
-        0.28,
-        0.06,
-        -0.72
+        0.16,
+        0.11,
+        -0.92
       );
 
-      this.gun.add(optic);
+      this.gun.add(
+        optic
+      );
 
       const lens =
         new T.Mesh(
           new T.CylinderGeometry(
-            0.055,
-            0.055,
-            0.02,
+            0.06,
+            0.06,
+            0.025,
             16
           ),
           new T.MeshBasicMaterial({
-            color: 0x4fd5c0
+            color: 0x51d9c4
           })
         );
 
@@ -308,70 +418,90 @@ export class PlayerController {
         Math.PI / 2;
 
       lens.position.set(
-        0.28,
-        0.06,
-        -0.9
+        0.16,
+        0.11,
+        -1.13
       );
 
-      this.gun.add(lens);
+      this.gun.add(
+        lens
+      );
     }
   }
 
   update(dt) {
+
     if (!this.alive) {
       return;
     }
 
-    const a =
+    const axis =
       this.input.axis();
 
     const look =
       this.input.takeLook();
 
+    /*
+    =========================================
+    MOUSE LOOK
+    =========================================
+    */
+
     this.yaw -=
-      look.x * 0.0022;
+      look.x * 0.0023;
+
+    this.pitch -=
+      look.y * 0.0018;
 
     this.pitch =
-      TMathClamp(
-        this.pitch -
-          look.y * 0.0018,
-        -1.2,
-        0.85
+      Math.max(
+        -1.25,
+        Math.min(
+          1.05,
+          this.pitch
+        )
       );
 
-    this.recoil =
-      Math.max(
-        0,
-        this.recoil -
-          dt * 4
-      );
+    /*
+    =========================================
+    MOVEMENT
+    =========================================
+    */
 
     const forward =
       new this.T.Vector3(
-        -Math.sin(this.yaw),
+        -Math.sin(
+          this.yaw
+        ),
         0,
-        -Math.cos(this.yaw)
+        -Math.cos(
+          this.yaw
+        )
       );
 
     const right =
       new this.T.Vector3(
-        Math.cos(this.yaw),
+        Math.cos(
+          this.yaw
+        ),
         0,
-        -Math.sin(this.yaw)
+        -Math.sin(
+          this.yaw
+        )
       );
 
     const move =
       new this.T.Vector3();
 
-    move
-      .addScaledVector(
-        forward,
-        a.y
-      )
-      .addScaledVector(
-        right,
-        a.x
-      );
+    move.addScaledVector(
+      forward,
+      axis.y
+    );
+
+    move.addScaledVector(
+      right,
+      axis.x
+    );
 
     if (
       move.lengthSq() > 1
@@ -379,71 +509,109 @@ export class PlayerController {
       move.normalize();
     }
 
-    const crouch =
+    const crouching =
       this.input.isCrouch();
 
-    const sprint =
+    const sprinting =
       this.input.isSprint() &&
-      !crouch &&
+      !crouching &&
       move.lengthSq() > 0.01 &&
       this.stamina > 0;
 
-    if (sprint) {
+    if (sprinting) {
+
       this.stamina =
         Math.max(
           0,
           this.stamina -
             dt * 20
         );
+
     } else {
+
       this.stamina =
         Math.min(
           100,
           this.stamina +
-            dt * 14
+            dt * 12
         );
+
     }
 
     const speed =
-      sprint
+      sprinting
         ? this.c.player.sprintSpeed
-        : crouch
+        : crouching
         ? this.c.player.crouchSpeed
         : this.c.player.walkSpeed;
 
-    this.object.position.addScaledVector(
-      move,
-      dt * speed
-    );
+    if (
+      move.lengthSq() > 0.001
+    ) {
+
+      this.object.position.addScaledVector(
+        move,
+        speed * dt
+      );
+
+      this.walkTime +=
+        dt *
+        (sprinting ? 12 : 8);
+
+    }
+
+    /*
+    =========================================
+    COLLISION
+    =========================================
+    */
 
     this.map.resolve(
       this.object.position,
       this.c.player.radius
     );
 
+    const worldHalf =
+      this.c.world.size /
+      2 -
+      20;
+
     this.object.position.x =
-      TMathClamp(
-        this.object.position.x,
-        -780,
-        780
+      Math.max(
+        -worldHalf,
+        Math.min(
+          worldHalf,
+          this.object.position.x
+        )
       );
 
     this.object.position.z =
-      TMathClamp(
-        this.object.position.z,
-        -780,
-        780
+      Math.max(
+        -worldHalf,
+        Math.min(
+          worldHalf,
+          this.object.position.z
+        )
       );
+
+    /*
+    =========================================
+    JUMP
+    =========================================
+    */
 
     if (
       this.input.consumeJump() &&
       this.grounded &&
-      !crouch
+      !crouching
     ) {
+
       this.vy =
         this.c.player.jump;
 
-      this.grounded = false;
+      this.grounded =
+        false;
+
     }
 
     this.vy -=
@@ -456,136 +624,196 @@ export class PlayerController {
     if (
       this.object.position.y <= 0
     ) {
-      if (
-        !this.grounded &&
-        this.vy < -14
-      ) {
-        this.damage(
-          Math.min(
-            30,
-            (-this.vy - 14) * 2
-          ),
-          true
-        );
-      }
 
-      this.object.position.y = 0;
+      this.object.position.y =
+        0;
+
       this.vy = 0;
-      this.grounded = true;
+
+      this.grounded =
+        true;
+
     }
 
-    this.object.rotation.y =
-      this.yaw;
-  }
+    /*
+    =========================================
+    RECOIL RECOVERY
+    =========================================
+    */
 
-  damage(amount, fall = false) {
-    if (!this.alive) {
-      return;
-    }
-
-    const absorb =
-      fall
-        ? 0
-        : Math.min(
-            this.armor,
-            amount * 0.65
-          );
-
-    this.armor =
-      Math.max(
-        0,
-        this.armor - absorb
-      );
-
-    this.hp =
-      Math.max(
-        0,
-        this.hp -
-          (amount - absorb)
-      );
-
-    if (this.hp <= 0) {
-      this.alive = false;
-    }
-
-    return this.alive;
-  }
-
-  addRecoil(amount) {
-    this.recoil =
+    this.recoil +=
+      (0 - this.recoil) *
       Math.min(
-        0.22,
-        this.recoil + amount
+        1,
+        dt * 9
       );
-
-    this.pitch +=
-      amount * 0.7;
   }
 
-  cameraUpdate(camera) {
-    const p =
-      this.object.position.clone();
+  cameraUpdate(
+    camera,
+    dt
+  ) {
 
-    p.y +=
-      this.input.isCrouch()
-        ? 1.38
+    /*
+    =========================================
+    TRUE FPP POSITION
+    =========================================
+    */
+
+    const crouch =
+      this.input.isCrouch();
+
+    const eyeHeight =
+      crouch
+        ? 1.28
         : 1.68;
 
-    camera.position.copy(p);
+    const moving =
+      this.input
+        .axis()
+        .x !== 0 ||
+      this.input
+        .axis()
+        .y !== 0;
 
-    const aim =
+    const bobAmount =
+      moving
+        ? crouch
+          ? 0.018
+          : 0.035
+        : 0;
+
+    const bobX =
+      moving
+        ? Math.cos(
+            this.walkTime
+          ) *
+          bobAmount
+        : 0;
+
+    const bobY =
+      moving
+        ? Math.abs(
+            Math.sin(
+              this.walkTime
+            )
+          ) *
+          bobAmount
+        : 0;
+
+    camera.position.set(
+      this.object.position.x +
+        bobX,
+
+      this.object.position.y +
+        eyeHeight +
+        bobY,
+
+      this.object.position.z
+    );
+
+    /*
+    =========================================
+    CAMERA ROTATION
+    =========================================
+    */
+
+    camera.rotation.order =
+      "YXZ";
+
+    camera.rotation.y =
+      this.yaw;
+
+    camera.rotation.x =
+      this.pitch -
+      this.recoil;
+
+    camera.rotation.z =
+      moving
+        ? Math.sin(
+            this.walkTime *
+              0.5
+          ) *
+          0.003
+        : 0;
+
+    /*
+    =========================================
+    FOV / ADS
+    =========================================
+    */
+
+    const aiming =
       this.input.isAim();
 
-    const targetFov =
-      aim
-        ? this.currentWeapon?.id ===
-          "sniper"
-          ? 24
-          : 45
-        : 74;
+    let targetFov =
+      76;
+
+    if (aiming) {
+
+      if (
+        this.currentWeapon
+          ?.id === "sniper"
+      ) {
+        targetFov = 28;
+      } else if (
+        this.currentWeapon
+          ?.scope === "4X"
+      ) {
+        targetFov = 42;
+      } else {
+        targetFov = 55;
+      }
+
+    }
 
     camera.fov +=
       (targetFov -
         camera.fov) *
-      0.18;
+      Math.min(
+        1,
+        dt * 12
+      );
 
     camera.updateProjectionMatrix();
 
-    const dir =
-      new this.T.Vector3(
-        -Math.sin(this.yaw) *
-          Math.cos(
-            this.pitch -
-              this.recoil
-          ),
-        Math.sin(
-          this.pitch -
-            this.recoil
-        ),
-        -Math.cos(this.yaw) *
-          Math.cos(
-            this.pitch -
-              this.recoil
-          )
-      );
-
-    camera.lookAt(
-      p.clone().add(dir)
-    );
+    /*
+    =========================================
+    WEAPON
+    =========================================
+    */
 
     if (
       this.viewModel.parent !==
       camera
     ) {
+
       camera.add(
         this.viewModel
       );
+
     }
 
+    const weaponBob =
+      moving
+        ? Math.sin(
+            this.walkTime
+          ) * 0.012
+        : 0;
+
     this.viewModel.position.set(
-      aim ? 0.02 : 0.03,
-      aim ? 0.02 : 0.01,
-      aim ? -0.58 : -0.72
+      aiming
+        ? 0
+        : 0.015,
+
+      aiming
+        ? -0.015
+        : -0.01 +
+          weaponBob,
+
+      aiming
+        ? -0.52
+        : -0.68
     );
 
     this.viewModel.rotation.set(
@@ -597,15 +825,53 @@ export class PlayerController {
     this.viewModel.visible =
       true;
   }
-}
 
-function TMathClamp(
-  v,
-  a,
-  b
-) {
-  return Math.max(
-    a,
-    Math.min(b, v)
-  );
+  damage(
+    amount
+  ) {
+
+    if (!this.alive) {
+      return;
+    }
+
+    const armorDamage =
+      Math.min(
+        this.armor,
+        amount * 0.65
+      );
+
+    this.armor -=
+      armorDamage;
+
+    this.hp -=
+      amount -
+      armorDamage;
+
+    if (
+      this.hp <= 0
+    ) {
+
+      this.hp = 0;
+
+      this.alive =
+        false;
+
+    }
+
+    return this.alive;
+  }
+
+  addRecoil(
+    amount
+  ) {
+
+    this.recoil +=
+      amount;
+
+    this.recoil =
+      Math.min(
+        0.16,
+        this.recoil
+      );
+  }
 }
