@@ -41,6 +41,7 @@ let initialized = false;
 let running = false;
 let starting = false;
 let lastPlayerHP = 100;
+let lastFootstep = 0;
 
 const ui = new UI();
 try {
@@ -583,7 +584,7 @@ function startMatch() {
     );
 
     ui.compass?.(player.yaw);
-    ui.scope?.(input.isAim(), weapons.current);
+    ui.scope?.(player.cameraMode==="FPP" && input.isAim(), weapons.current);
     ui.toast("V = FPP / TPP · SURVIVE THE DISTRICT");
 
     ui.weapon(
