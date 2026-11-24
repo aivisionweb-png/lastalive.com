@@ -677,12 +677,11 @@ export class PlayerController {
     =========================================
     */
 
-    this.recoil +=
-      (0 - this.recoil) *
-      Math.min(
-        1,
-        dt * 9
-      );
+    this.recoil += (0 - this.recoil) * Math.min(1,dt * 9);
+
+    const sway = Math.sin(this.walkTime * 0.7) * 0.012;
+    this.viewModel.position.x += (sway - this.viewModel.position.x) * Math.min(1,dt*8);
+    this.viewModel.position.y += (-Math.abs(sway)*0.35 - this.viewModel.position.y) * Math.min(1,dt*8);
   }
 
   cameraUpdate(
