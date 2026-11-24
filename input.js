@@ -255,6 +255,12 @@ export class InputController {
     hold("sprintBtn", "sprint");
     hold("aimBtn", "aim");
 
+    const cameraBtn=document.getElementById("cameraBtn");
+    cameraBtn?.addEventListener("pointerdown",e=>{
+      e.preventDefault();
+      this.cameraToggle=true;
+    });
+
     const reload = document.getElementById("reloadBtn");
     if (reload) {
       reload.addEventListener("pointerdown", e => {
