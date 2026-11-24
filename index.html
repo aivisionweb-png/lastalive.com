@@ -29,6 +29,41 @@
 
 <body>
 
+  <!-- PREMIUM LOADING SCREEN -->
+  <div id="loadingScreen">
+    <div class="loading-grid"></div>
+    <div class="loading-top">
+      <span>LAST//ALIVE</span>
+      <span>DISTRICT 09 · ONLINE</span>
+    </div>
+    <div class="loading-core">
+      <div class="loading-radar"><i></i></div>
+      <div class="loading-kicker">TACTICAL COMBAT SIMULATION</div>
+      <div class="loading-title">LAST <span>ALIVE</span></div>
+      <div class="loading-sub">INITIALIZING DISTRICT 09</div>
+      <div class="loading-progress"><i id="loadingProgress"></i></div>
+      <div id="loadingText">SYSTEM BOOTING · INITIALIZING...</div>
+    </div>
+    <div class="loading-bottom">
+      <span>BUILD 09.50</span>
+      <span>FPP // SURVIVAL</span>
+    </div>
+  </div>
+
+  <!-- PREMIUM SCOPE OVERLAY -->
+  <div id="scopeOverlay" class="scope-overlay hidden">
+    <div class="scope-vignette"></div>
+    <div class="scope-ring">
+      <span class="scope-cross h"></span>
+      <span class="scope-cross v"></span>
+      <span class="scope-dot"></span>
+      <span class="scope-mark m1">4</span>
+      <span class="scope-mark m2">2</span>
+      <span class="scope-mark m3">0</span>
+    </div>
+    <div class="scope-label" id="scopeLabel">RED DOT // 1X</div>
+  </div>
+
   <!-- =================================================
        GAME CANVAS
   ================================================== -->
@@ -384,6 +419,16 @@
 
     </div>
 
+
+    <!-- WEAPON BAR -->
+    <div class="weapon-bar" id="weaponBar">
+      <div class="weapon-slot active" data-slot="0"><b>1</b><span>VX-556</span></div>
+      <div class="weapon-slot" data-slot="1"><b>2</b><span>K-9</span></div>
+      <div class="weapon-slot" data-slot="2"><b>3</b><span>M-12</span></div>
+      <div class="weapon-slot" data-slot="3"><b>4</b><span>R-47</span></div>
+      <div class="weapon-slot" data-slot="4"><b>5</b><span>VSR-9</span></div>
+      <div class="weapon-slot" data-slot="5"><b>6</b><span>PX-9</span></div>
+    </div>
 
     <!-- WEAPON -->
 
