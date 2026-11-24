@@ -71,3 +71,26 @@ button,input{font:inherit}button{cursor:pointer}
 body.ads-active .crosshair{opacity:0}
 body.ads-active .weapon-bar{opacity:.25}
 @media(max-width:700px){#loadingScreen{padding:20px}.weapon-bar{bottom:78px;max-width:96vw;overflow:hidden}.weapon-slot{min-width:58px}.weapon-slot span{font-size:6px}.scope-ring{width:70vw;height:70vw}}
+
+.mobile-tip{display:none;position:fixed;left:50%;bottom:7px;transform:translateX(-50%);z-index:8;font:7px monospace;letter-spacing:1.2px;color:#a8b8b0;background:rgba(3,7,5,.72);border:1px solid rgba(255,255,255,.08);padding:6px 9px;pointer-events:none}
+@media(max-width:700px){
+  html,body{overscroll-behavior:none}
+  #game{touch-action:none}
+  .mobile-tip{display:block}
+  .touch-btn{width:62px;height:62px;box-shadow:0 5px 20px rgba(0,0,0,.35);-webkit-tap-highlight-color:transparent}
+  .fire{width:88px;height:88px;font-size:10px}
+  #aimBtn{right:122px;bottom:28px}
+  #jumpBtn{right:25px;bottom:138px}
+  #crouchBtn{right:105px;bottom:128px}
+  #sprintBtn{left:165px;bottom:28px}
+  #reloadBtn{right:215px;bottom:30px}
+  #joystick{width:126px;height:126px;bottom:22px;left:18px}
+  #touchLook{z-index:1}
+  .touch-btn,#joystick{z-index:5}
+  .weapon-bar{bottom:150px;left:50%;transform:translateX(-50%) scale(.82);transform-origin:center bottom}
+  .bottom-left{bottom:8px}
+  .bottom-right{bottom:8px}
+}
+@media(max-width:700px) and (orientation:portrait){
+  #mobileControls:after{content:"ROTATE PHONE";position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(3,6,5,.96);color:#5fe0ad;font:900 18px monospace;letter-spacing:4px;z-index:30}
+}
