@@ -334,3 +334,42 @@ body.la-touch-device #mobileControls,
   #mobileControls #vehicleBtn{right:18px!important;bottom:242px!important}
   #weaponBar{z-index:60!important;bottom:168px!important}
 }
+
+/* ===== STARTING LOBBY ===== */
+.lobby-badge{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:8px 12px;margin-bottom:16px;
+  border:1px solid rgba(53,217,255,.25);
+  background:rgba(5,16,27,.7);
+  color:#bcefff;font:800 9px/1 monospace;letter-spacing:2.5px;
+  box-shadow:0 0 28px rgba(53,217,255,.08);
+}
+.lobby-badge i{
+  width:6px;height:6px;border-radius:50%;
+  background:#35d9ff;box-shadow:0 0 12px #35d9ff;
+  animation:lobbyPulse 1.2s infinite;
+}
+.lobby-badge span{color:#ffb45e}
+@keyframes lobbyPulse{50%{opacity:.35;transform:scale(.65)}}
+.menu-screen:after{
+  content:"STARTING LOBBY";
+  position:absolute;right:42px;bottom:28px;
+  color:rgba(53,217,255,.16);
+  font:900 clamp(32px,6vw,92px)/1 Arial;
+  letter-spacing:-4px;pointer-events:none;
+}
+.deploy-panel{
+  position:relative;
+}
+.deploy-panel:before{
+  content:"PLAYER SLOT 01  ·  READY TO DEPLOY";
+  display:block;margin:-8px 0 18px;
+  color:#35d9ff;font:800 8px monospace;letter-spacing:2px;
+}
+.mode.active{
+  box-shadow:inset 0 0 22px rgba(53,217,255,.04);
+}
+@media(max-width:850px){
+  .menu-screen:after{display:none}
+  .lobby-badge{margin-bottom:10px}
+}
