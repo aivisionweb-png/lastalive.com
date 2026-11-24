@@ -9,15 +9,38 @@
 
   "use strict";
 
-  const status =
-    document.getElementById("bootStatus");
-
-  window.__LAST_ALIVE_READY = false;
-  window.__LAST_ALIVE_BOOT_ERROR = null;
 
   /*
   =======================================================
-  STATUS
+  STATUS ELEMENT
+  =======================================================
+  */
+
+  const status =
+    document.getElementById(
+      "bootStatus"
+    );
+
+
+  /*
+  =======================================================
+  GLOBAL BOOT STATE
+  =======================================================
+  */
+
+  window.__LAST_ALIVE_READY =
+    false;
+
+  window.__LAST_ALIVE_BOOT_ERROR =
+    null;
+
+  window.__LAST_ALIVE_MAIN_LOADED =
+    false;
+
+
+  /*
+  =======================================================
+  STATUS UI
   =======================================================
   */
 
@@ -37,26 +60,38 @@
       "error",
       error
     );
+
   }
+
 
   /*
   =======================================================
-  LOAD SCRIPT
+  GENERIC SCRIPT LOADER
   =======================================================
   */
 
   function loadScript(
     src,
-    timeout = 10000
+    timeout = 15000
   ) {
 
     return new Promise(
       (resolve, reject) => {
 
         const script =
-          document.createElement("script");
+          document.createElement(
+            "script"
+          );
 
-        let finished = false;
+        let finished =
+          false;
+
+
+        /*
+        -----------------------------------------------
+        TIMEOUT
+        -----------------------------------------------
+        */
 
         const timer =
           setTimeout(
@@ -66,13 +101,15 @@
                 return;
               }
 
-              finished = true;
+              finished =
+                true;
 
               script.remove();
 
               reject(
                 new Error(
-                  "Timeout loading " + src
+                  "Timeout loading " +
+                  src
                 )
               );
 
@@ -80,11 +117,25 @@
             timeout
           );
 
+
+        /*
+        -----------------------------------------------
+        SOURCE
+        -----------------------------------------------
+        */
+
         script.src =
           src;
 
         script.async =
           false;
+
+
+        /*
+        -----------------------------------------------
+        SUCCESS
+        -----------------------------------------------
+        */
 
         script.onload =
           () => {
@@ -93,7 +144,8 @@
               return;
             }
 
-            finished = true;
+            finished =
+              true;
 
             clearTimeout(
               timer
@@ -103,6 +155,13 @@
 
           };
 
+
+        /*
+        -----------------------------------------------
+        FAILURE
+        -----------------------------------------------
+        */
+
         script.onerror =
           () => {
 
@@ -110,7 +169,8 @@
               return;
             }
 
-            finished = true;
+            finished =
+              true;
 
             clearTimeout(
               timer
@@ -120,11 +180,13 @@
 
             reject(
               new Error(
-                "Failed loading " + src
+                "Failed loading " +
+                src
               )
             );
 
           };
+
 
         document.head.appendChild(
           script
@@ -135,6 +197,7 @@
 
   }
 
+
   /*
   =======================================================
   THREE.JS
@@ -143,7 +206,15 @@
 
   async function loadThree() {
 
-    if (window.THREE) {
+    /*
+    -----------------------------------------------
+    ALREADY LOADED
+    -----------------------------------------------
+    */
+
+    if (
+      window.THREE
+    ) {
 
       console.log(
         "LAST ALIVE: Three.js already loaded",
@@ -154,13 +225,41 @@
 
     }
 
+
+    /*
+    -----------------------------------------------
+    COMPATIBLE THREE.JS BUILD
+    -----------------------------------------------
+
+    IMPORTANT:
+
+    Three.js r160+ does not provide the old
+    build/three.min.js global build.
+
+    Our current game architecture expects:
+
+        window.THREE
+
+    Therefore we use r159.
+    -----------------------------------------------
+    */
+
     const sources = [
 
-      "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.min.js",
+      "https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js",
 
-      "https://unpkg.com/three@0.170.0/build/three.min.js"
+      "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.159.0/three.min.js",
+
+      "https://unpkg.com/three@0.159.0/build/three.min.js"
 
     ];
+
+
+    /*
+    -----------------------------------------------
+    TRY EACH CDN
+    -----------------------------------------------
+    */
 
     for (
       const source of sources
@@ -177,11 +276,21 @@
           source
         );
 
+
         await loadScript(
           source
         );
 
-        if (window.THREE) {
+
+        /*
+        -------------------------------------------
+        VERIFY
+        -------------------------------------------
+        */
+
+        if (
+          window.THREE
+        ) {
 
           console.log(
             "LAST ALIVE: Three.js ONLINE · r" +
@@ -192,7 +301,14 @@
 
         }
 
-      } catch (error) {
+        console.warn(
+          "Three.js script loaded but window.THREE is missing:",
+          source
+        );
+
+      } catch (
+        error
+      ) {
 
         console.warn(
           "Three.js source failed:",
@@ -204,10 +320,19 @@
 
     }
 
+
+    /*
+    -----------------------------------------------
+    ALL FAILED
+    -----------------------------------------------
+    */
+
     throw new Error(
-      "Three.js failed to load from all CDNs"
+      "Three.js failed to load. Compatible engine unavailable."
     );
+
   }
+
 
   /*
   =======================================================
@@ -216,6 +341,12 @@
   */
 
   async function loadSocketIO() {
+
+    /*
+    -----------------------------------------------
+    ALREADY LOADED
+    -----------------------------------------------
+    */
 
     if (
       typeof window.io ===
@@ -230,6 +361,13 @@
 
     }
 
+
+    /*
+    -----------------------------------------------
+    SOCKET.IO SOURCES
+    -----------------------------------------------
+    */
+
     const sources = [
 
       "https://cdn.socket.io/4.8.1/socket.io.min.js",
@@ -237,6 +375,13 @@
       "https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js"
 
     ];
+
+
+    /*
+    -----------------------------------------------
+    TRY EACH
+    -----------------------------------------------
+    */
 
     for (
       const source of sources
@@ -249,9 +394,11 @@
           source
         );
 
+
         await loadScript(
           source
         );
+
 
         if (
           typeof window.io ===
@@ -266,7 +413,9 @@
 
         }
 
-      } catch (error) {
+      } catch (
+        error
+      ) {
 
         console.warn(
           "Socket.IO source failed:",
@@ -278,9 +427,15 @@
 
     }
 
+
     /*
-    Socket.IO is optional.
-    The local game should still work.
+    -----------------------------------------------
+    OPTIONAL NETWORK
+    -----------------------------------------------
+
+    The game must still be able to boot in
+    local / bot mode if Socket.IO is unavailable.
+    -----------------------------------------------
     */
 
     console.warn(
@@ -288,7 +443,9 @@
     );
 
     return false;
+
   }
+
 
   /*
   =======================================================
@@ -302,23 +459,45 @@
       "SYSTEM BOOTING · LOADING GAME SYSTEMS..."
     );
 
+
     console.log(
       "LAST ALIVE: importing main.js"
     );
 
-    await import(
-      "./main.js"
-    );
 
-    console.log(
-      "LAST ALIVE: main.js imported"
-    );
+    try {
+
+      await import(
+        "./main.js"
+      );
+
+      window.__LAST_ALIVE_MAIN_LOADED =
+        true;
+
+
+      console.log(
+        "LAST ALIVE: main.js imported"
+      );
+
+    } catch (
+      error
+    ) {
+
+      console.error(
+        "LAST ALIVE: main.js import failed",
+        error
+      );
+
+      throw error;
+
+    }
 
   }
 
+
   /*
   =======================================================
-  ERROR HANDLER
+  BOOT FAILURE
   =======================================================
   */
 
@@ -331,11 +510,13 @@
       String(error) ||
       "Unknown startup error";
 
+
     window.__LAST_ALIVE_READY =
       false;
 
     window.__LAST_ALIVE_BOOT_ERROR =
       message;
+
 
     console.error(
       "===================================="
@@ -350,8 +531,13 @@
     );
 
     console.error(
+      error
+    );
+
+    console.error(
       "===================================="
     );
+
 
     setStatus(
       "ENGINE ERROR · " +
@@ -361,9 +547,123 @@
 
   }
 
+
   /*
   =======================================================
-  BOOT
+  WAIT FOR GAME READY
+  =======================================================
+  */
+
+  function waitForGameReady() {
+
+    const started =
+      performance.now();
+
+
+    function check() {
+
+      /*
+      -----------------------------------------------
+      READY
+      -----------------------------------------------
+      */
+
+      if (
+        window.__LAST_ALIVE_READY ===
+        true
+      ) {
+
+        setStatus(
+          "SYSTEM READY · ENGINE ONLINE"
+        );
+
+
+        console.log(
+          "===================================="
+        );
+
+        console.log(
+          "LAST ALIVE READY"
+        );
+
+        console.log(
+          "THREE:",
+          window.THREE?.REVISION
+        );
+
+        console.log(
+          "MAIN:",
+          window.__LAST_ALIVE_MAIN_LOADED
+        );
+
+        console.log(
+          "===================================="
+        );
+
+        return;
+
+      }
+
+
+      /*
+      -----------------------------------------------
+      MAIN REPORTED AN ERROR
+      -----------------------------------------------
+      */
+
+      if (
+        window.__LAST_ALIVE_BOOT_ERROR
+      ) {
+
+        return;
+
+      }
+
+
+      /*
+      -----------------------------------------------
+      TIMEOUT
+      -----------------------------------------------
+      */
+
+      if (
+        performance.now() -
+        started >
+        8000
+      ) {
+
+        fail(
+          new Error(
+            "Game engine did not become ready"
+          )
+        );
+
+        return;
+
+      }
+
+
+      /*
+      -----------------------------------------------
+      CONTINUE
+      -----------------------------------------------
+      */
+
+      requestAnimationFrame(
+        check
+      );
+
+    }
+
+
+    check();
+
+  }
+
+
+  /*
+  =======================================================
+  MAIN BOOT
   =======================================================
   */
 
@@ -371,17 +671,25 @@
 
     try {
 
+      /*
+      -----------------------------------------------
+      INITIAL STATUS
+      -----------------------------------------------
+      */
+
       setStatus(
         "SYSTEM BOOTING · INITIALIZING..."
       );
 
+
       /*
       -----------------------------------------------
-      THREE
+      THREE.JS
       -----------------------------------------------
       */
 
       await loadThree();
+
 
       /*
       -----------------------------------------------
@@ -391,80 +699,27 @@
 
       await loadSocketIO();
 
+
       /*
       -----------------------------------------------
-      MAIN
+      MAIN GAME
       -----------------------------------------------
       */
 
       await loadMain();
 
+
       /*
       -----------------------------------------------
-      WAIT FOR MAIN READY
+      WAIT FOR MAIN
       -----------------------------------------------
       */
 
-      const started =
-        performance.now();
+      waitForGameReady();
 
-      const checkReady =
-        () => {
-
-          if (
-            window.__LAST_ALIVE_READY
-          ) {
-
-            setStatus(
-              "SYSTEM READY · ENGINE ONLINE"
-            );
-
-            console.log(
-              "===================================="
-            );
-
-            console.log(
-              "LAST ALIVE READY"
-            );
-
-            console.log(
-              "THREE:",
-              window.THREE?.REVISION
-            );
-
-            console.log(
-              "===================================="
-            );
-
-            return;
-
-          }
-
-          if (
-            performance.now() -
-            started >
-            6000
-          ) {
-
-            fail(
-              new Error(
-                "Game engine did not become ready"
-              )
-            );
-
-            return;
-
-          }
-
-          requestAnimationFrame(
-            checkReady
-          );
-
-        };
-
-      checkReady();
-
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
       fail(
         error
@@ -474,9 +729,10 @@
 
   }
 
+
   /*
   =======================================================
-  GLOBAL ERRORS
+  GLOBAL ERROR LISTENER
   =======================================================
   */
 
@@ -493,17 +749,25 @@
     }
   );
 
+
+  /*
+  =======================================================
+  UNHANDLED PROMISE LISTENER
+  =======================================================
+  */
+
   window.addEventListener(
     "unhandledrejection",
     event => {
 
       console.error(
-        "LAST ALIVE PROMISE ERROR:",
+        "LAST ALIVE UNHANDLED PROMISE:",
         event.reason
       );
 
     }
   );
+
 
   /*
   =======================================================
