@@ -179,8 +179,7 @@ function initGame() {
   renderer.toneMappingExposure =
     1.15;
 
-  renderer.shadowMap.enabled =
-    true;
+  renderer.shadowMap.enabled = true;
 
   renderer.shadowMap.type =
     T.PCFSoftShadowMap;
@@ -207,10 +206,7 @@ function initGame() {
 
   sun.castShadow = true;
 
-  sun.shadow.mapSize.set(
-    2048,
-    2048
-  );
+  sun.shadow.mapSize.set(1024,1024);
 
   sun.shadow.camera.left =
     -900;
@@ -543,6 +539,7 @@ function startMatch() {
 
     match.begin();
 
+    player.applyLoadout?.(window.__LA_CHARACTER||0, window.__LA_OUTFIT||0);
     ui.start(name);
 
     running = true;
