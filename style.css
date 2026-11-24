@@ -307,3 +307,30 @@ body{background:var(--la-bg)}
   #jumpBtn{right:24px!important;bottom:140px!important}
   #sprintBtn{left:160px!important;bottom:30px!important}
 }
+
+/* ===== HARD TOUCH DEVICE MODE ===== */
+body.la-touch-device #mobileControls,
+@media (pointer:coarse) {
+  #mobileControls{display:block!important;visibility:visible!important;opacity:1!important}
+}
+@media (pointer:coarse) {
+  #mobileControls{position:fixed!important;inset:0!important;z-index:9999!important;pointer-events:none!important}
+  #mobileControls .touch-btn{display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;position:absolute!important}
+  #mobileControls #joystick{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;position:absolute!important}
+  #touchLook{pointer-events:auto!important;z-index:1!important}
+  #mobileControls .touch-btn,#mobileControls #joystick{z-index:50!important}
+  #mobileControls .camera-btn{display:flex!important;right:18px!important;top:18px!important;bottom:auto!important;width:64px!important;height:64px!important;border-radius:16px!important}
+  #mobileControls .fire{right:18px!important;bottom:24px!important;width:96px!important;height:96px!important}
+  #mobileControls #aimBtn{right:126px!important;bottom:40px!important}
+  #mobileControls #jumpBtn{right:28px!important;bottom:142px!important}
+  #mobileControls #crouchBtn{right:112px!important;bottom:132px!important}
+  #mobileControls #reloadBtn{right:224px!important;bottom:40px!important}
+  #mobileControls #sprintBtn{left:164px!important;bottom:30px!important}
+  #mobileControls #joystick{left:18px!important;bottom:20px!important;width:136px!important;height:136px!important;border-radius:50%!important}
+  #mobileControls .utility-btn{display:flex!important}
+  #mobileControls #glooBtn{right:226px!important;bottom:150px!important}
+  #mobileControls #grenadeBtn{right:290px!important;bottom:150px!important}
+  #mobileControls #medkitBtn{right:354px!important;bottom:150px!important}
+  #mobileControls #vehicleBtn{right:18px!important;bottom:242px!important}
+  #weaponBar{z-index:60!important;bottom:168px!important}
+}
