@@ -1,0 +1,30 @@
+MAIN.JS — REQUIRED SMALL PATCH
+
+Inside bindUI(), replace the current Digit1/Digit2/Digit3 block with:
+
+for (let i = 1; i <= 6; i++) {
+  window.addEventListener("keydown", event => {
+    if (!running) return;
+    if (event.code === `Digit${i}`) {
+      weapons?.switch(i - 1);
+    }
+  });
+}
+
+Also change the menu feature text from:
+
+15 / 03
+
+to:
+
+50 / 06
+
+and the controls text from:
+
+1–3 WEAPONS
+
+to:
+
+1–6 WEAPONS
+
+The existing main.js game loop already uses the upgraded config/map/player/weapons/bots/loot modules.
