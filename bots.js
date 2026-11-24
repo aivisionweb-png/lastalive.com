@@ -364,6 +364,7 @@ export class BotManager {
       bot.object.visible = false;
 
       this.player.kills++;
+      this.ui.killStreak?.(this.player.kills);
 
       this.ui.killFeed(
         "YOU",
