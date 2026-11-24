@@ -382,6 +382,8 @@ export class BotManager {
   }
 
   update(dt) {
+    if (this.player.__combatLocked) return;
+
     for (
       const bot of this.bots
     ) {
