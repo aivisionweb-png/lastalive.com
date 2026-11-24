@@ -660,3 +660,24 @@ body{background:var(--la-bg)}
 /* GAMEPLAY TOUCH SURFACE */
 html,body,#game,#touchLook,#mobileControls{touch-action:none!important}
 #game{user-select:none;-webkit-user-select:none}
+
+/* ===== DESKTOP CONTROL SANITIZER ===== */
+@media (hover:hover) and (pointer:fine) and (min-width:701px){
+  #mobileControls,
+  #mobileControls.hidden,
+  #mobileTip{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+}
+
+/* ===== MOBILE ONLY ===== */
+@media (hover:none), (pointer:coarse), (max-width:700px){
+  #mobileControls{display:block!important}
+}
+
+/* Reduce GPU-heavy shadow workload on small screens. */
+@media (max-width:900px){
+  #game{image-rendering:auto}
+}
