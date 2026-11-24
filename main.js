@@ -512,13 +512,9 @@ function startMatch() {
     player.kills = 0;
     player.alive = true;
     player.stamina = 100;
+    player.cameraMode = "FPP";
+    player.setCameraMode("FPP");
     battleRoyale?.start();
-
-    player.object.position.set(
-      0,
-      0,
-      0
-    );
 
     player.yaw =
       0;
@@ -586,7 +582,7 @@ function startMatch() {
 
     ui.compass?.(player.yaw);
     ui.scope?.(input.isAim(), weapons.current);
-    ui.toast("DROP PHASE · W/A/S/D OR JOYSTICK TO STEER");
+    ui.toast("V = FPP / TPP · SURVIVE THE DISTRICT");
 
     ui.weapon(
       weapons.current,
@@ -812,6 +808,10 @@ function loop() {
   if (running) {
 
     player.update(dt);
+    if(input.consumeCameraToggle()){
+      const mode=player.setCameraMode(player.cameraMode==="FPP"?"TPP":"FPP");
+      ui.toast(mode+" CAMERA");
+    }
     battleRoyale?.update(dt, bots);
     multiplayerAvatars?.update();
 
@@ -886,9 +886,7 @@ function loop() {
     ui.compass?.(player.yaw);
     ui.scope?.(input.isAim(), weapons.current);
 
-    ui.alive(
-      bots.alive() + 1
-    );
+    ui.alive(bots.alive() + 1 + (network?.remotePlayers?.size || 0));
 
     /*
     MINIMAP
