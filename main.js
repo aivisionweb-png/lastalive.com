@@ -115,7 +115,7 @@ function initGame() {
 
   scene.background = new T.Color(0x07111f);
 
-  scene.fog = new T.Fog(0x07111f, 180, 1250);
+  scene.fog = new T.Fog(0x07111f, 260, 2100);
 
   /*
   =========================================
@@ -163,12 +163,7 @@ function initGame() {
     window.innerHeight
   );
 
-  renderer.setPixelRatio(
-    Math.min(
-      window.devicePixelRatio || 1,
-      1.5
-    )
-  );
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
   renderer.outputColorSpace =
     T.SRGBColorSpace;
@@ -850,7 +845,7 @@ function loop() {
       }
     }
 
-    multiplayerAvatars?.update();
+    multiplayerAvatars?.update(dt);
 
     /*
     FIRST PERSON CAMERA
@@ -884,12 +879,8 @@ function loop() {
     // Keep enemy silhouettes rendered above distant scene geometry.
     for (const bot of bots.bots) {
       if (!bot.alive) continue;
-      bot.object.renderOrder = 8;
-      bot.object.traverse(child => {
-        if (child.material) {
-          child.renderOrder = 8;
-        }
-      });
+      bot.object.renderOrder = 2;
+      bot.object.traverse(child => { if (child.material) { child.renderOrder = 2; child.material.depthTest = true; } });
     }
 
     loot.update(dt);
