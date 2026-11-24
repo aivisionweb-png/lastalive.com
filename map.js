@@ -64,8 +64,8 @@ export class WorldMap {
       z
     );
 
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    mesh.castShadow = solid && h >= 4;
+    mesh.receiveShadow = solid && h >= 4;
 
     this.root.add(
       mesh
@@ -156,6 +156,8 @@ export class WorldMap {
             windowMat
           );
 
+        win.castShadow=false;
+        win.receiveShadow=false;
         win.position.set(
           x +
             ix *
@@ -1088,15 +1090,13 @@ export class WorldMap {
         const pole=new T.Mesh(new T.CylinderGeometry(.045,.08,6.5,7),orangeMat);
         pole.position.set(x,3.25,z);
         this.root.add(pole);
-        const lamp=new T.PointLight(0xff8b3d,1.2,30);
-        lamp.position.set(x,6.4,z);
-        this.root.add(lamp);
+        // Emissive lamp mesh only: avoids hundreds of dynamic point lights.
       }
     }
 
     // Floating dust / atmosphere particles
     const dustGeo=new T.BufferGeometry();
-    const dustCount=900;
+    const dustCount=450;
     const dustPos=new Float32Array(dustCount*3);
     for(let i=0;i<dustCount;i++){
       dustPos[i*3]=(Math.random()-.5)*2200;
