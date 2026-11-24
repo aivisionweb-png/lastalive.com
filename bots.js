@@ -147,6 +147,39 @@ export class BotManager {
 
     group.add(gun);
 
+    // High-visibility tactical enemy outline / beacon.
+    const glowMat = new T.MeshBasicMaterial({
+      color: 0xff304f,
+      transparent: true,
+      opacity: 0.82,
+      depthWrite: false,
+      blending: T.AdditiveBlending
+    });
+
+    const ring = new T.Mesh(
+      new T.TorusGeometry(0.62, 0.045, 8, 24),
+      glowMat
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.06;
+    group.add(ring);
+
+    const beacon = new T.Mesh(
+      new T.CylinderGeometry(0.035, 0.035, 3.4, 8),
+      glowMat
+    );
+    beacon.position.y = 1.8;
+    group.add(beacon);
+
+    const beaconTop = new T.Mesh(
+      new T.SphereGeometry(0.11, 8, 8),
+      glowMat
+    );
+    beaconTop.position.y = 3.5;
+    group.add(beaconTop);
+
+    group.userData.enemyGlow = { ring, beacon, beaconTop };
+
     const data = {
       alive: true,
 
@@ -295,8 +328,7 @@ export class BotManager {
       bot.hp = 0;
       bot.alive = false;
 
-      bot.object.visible =
-        false;
+      bot.object.visible = false;
 
       this.player.kills++;
 
@@ -349,6 +381,15 @@ export class BotManager {
           dx,
           dz
         );
+
+      const glow = bot.object.userData.enemyGlow;
+      if (glow) {
+        const pulse = 0.72 + Math.sin(performance.now() * 0.006 + bot.roam) * 0.18;
+        glow.ring.material.opacity = pulse;
+        glow.beacon.material.opacity = pulse * 0.72;
+        glow.beaconTop.material.opacity = pulse;
+        glow.ring.scale.setScalar(1 + Math.sin(performance.now() * 0.004 + bot.roam) * 0.08);
+      }
 
       bot.roam +=
         dt *
