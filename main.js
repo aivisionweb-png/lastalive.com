@@ -517,6 +517,12 @@ function startMatch() {
     player.cameraMode = "FPP";
     player.setCameraMode("FPP");
     battleRoyale?.start();
+    bots.bots.forEach(bot => {
+      bot.object.visible = false;
+      bot.alive = true;
+      bot.hp = 100;
+      bot.armor = 50;
+    });
     bots.relocateAroundPlayer?.();
 
     player.yaw =
@@ -840,6 +846,14 @@ function loop() {
     if(input.consumeReload?.()) weapons.reload();
 
     battleRoyale?.update(dt, bots);
+
+    // Reveal the combatants only after the drop/landing phase.
+    if (battleRoyale && !battleRoyale.dropActive) {
+      for (const bot of bots.bots) {
+        if (bot.alive) bot.object.visible = true;
+      }
+    }
+
     multiplayerAvatars?.update();
 
     /*
@@ -913,7 +927,7 @@ function loop() {
     ui.compass?.(player.yaw);
     ui.scope?.(player.cameraMode==="FPP" && input.isAim(), weapons.current);
 
-    ui.alive(bots.alive() + 1 + (network?.remotePlayers?.size || 0));
+    ui.alive((battleRoyale?.dropActive ? 50 : bots.alive() + 1) + (network?.remotePlayers?.size || 0));
 
     /*
     MINIMAP
